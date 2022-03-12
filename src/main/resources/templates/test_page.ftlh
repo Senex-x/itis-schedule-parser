@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <title>Welcome</title>
 </head>
 
 <body>
-<button>Get group</button>
+<h1>
+    Welcome ${user}!
+</h1>
 </body>
 </html>

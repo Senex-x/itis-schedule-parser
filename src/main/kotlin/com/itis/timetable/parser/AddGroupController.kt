@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping
 @Controller
 class AddGroupController {
 
-    @PostMapping
+    @PostMapping("/add_group")
     fun addGroup() {
         print("Add group request")
     }
