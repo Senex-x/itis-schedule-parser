@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $("#get-group-button").click(function () {
+    $("#button").click(function () {
         alert("Clicked!")
     })
 })
