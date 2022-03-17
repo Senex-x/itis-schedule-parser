@@ -1,9 +1,9 @@
 package com.itis.timetable.data.models.schedule
 
-import com.itis.timetable.data.models.group.Group
+import com.itis.timetable.data.models.group.GroupKt
 
 data class Schedule(
     val schedule: ScheduleEntity,
-    val group: Group,
+    val group: GroupKt,
     val dailySchedules: List<DailySchedule>,
 )
