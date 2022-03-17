@@ -28,16 +28,10 @@ class Tester {
     private lateinit var repo: GroupRepository
 
     fun test() {
-        repo.save(Group())
+        repo.save(Group(-1, "sd;f", 2))
 
         print(repo.get(1))
     }
-}
-
-@Configuration
-open class Config {
-    @Bean
-    open fun provideGroupRepository() = GroupRepository()
 }
 
 

@@ -2,22 +2,27 @@ package com.itis.timetable.data.models.group;
 
 import lombok.*;
 import org.hibernate.Hibernate;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.persistence.*;
 import java.util.Objects;
 
-@AllArgsConstructor
-@RequiredArgsConstructor
+//@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @Entity
 @Table(name = "groups", schema = "public")
 public class Group {
+    public Group(long id, String name, int courseNumber) {
+        this.id = id;
+        this.name = name;
+        this.courseNumber = courseNumber;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
     private String name;
     @Column(name = "course_number")
     private int courseNumber;
@@ -27,7 +32,7 @@ public class Group {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Group group = (Group) o;
-        return id != null && Objects.equals(id, group.id);
+        return Objects.equals(id, group.id);
     }
 
     @Override
