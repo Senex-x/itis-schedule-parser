@@ -18,18 +18,19 @@ open class HibernateConfiguration {
     private lateinit var environment: Environment
 
     @Bean
+    open fun sessionFactory() = LocalSessionFactoryBean().apply {
+        setDataSource(getDataSource())
+        setPackagesToScan("com.itis.timetable")
+        hibernateProperties = properties()
+        afterPropertiesSet()
+    }.`object`!!
+
+    @Bean
     open fun getDataSource() = DriverManagerDataSource().apply {
         setDriverClassName(environment.getProperty("spring.datasource.driver-class-name")!!)
         url = environment.getProperty("spring.datasource.url")
         username = environment.getProperty("spring.datasource.username")
         password = environment.getProperty("spring.datasource.password")
-    }
-
-    @Bean
-    open fun sessionFactory() = LocalSessionFactoryBean().apply {
-        setDataSource(getDataSource())
-        setPackagesToScan("com.itis.timetable")
-        hibernateProperties = properties()
     }
 
     private fun properties() = Properties().apply {
@@ -51,8 +52,8 @@ open class HibernateConfiguration {
         )
     }
 
-    @Autowired
     @Bean
+    @Autowired
     open fun getTransactionManager(
         sessionFactory: SessionFactory
     ): HibernateTransactionManager {
