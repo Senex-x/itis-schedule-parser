@@ -4,5 +4,5 @@ interface BaseRepository<T, K> {
     fun save(item: T)
     fun get(primaryKey: K): T?
     fun getAll(): List<T>
-    fun delete(id: K)
+    fun delete(item: T)
 }

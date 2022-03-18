@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
 class MainPageController {
-
     @Autowired
     lateinit var tester: Tester
+
 
     @GetMapping("/")
     fun getMainPage(): String {
@@ -31,6 +31,7 @@ class Tester {
         repo.save(Group(-1, "sd;f", 2))
 
         print(repo.get(1))
+        print(repo.getAll())
     }
 }
 

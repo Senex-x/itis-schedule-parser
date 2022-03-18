@@ -51,19 +51,6 @@ open class HibernateConfiguration {
         )
     }
 
-    /*
-(
-    id            bigserial
-        constraint groups_pk
-            primary key,
-    name          varchar(255),
-    course_number integer
-);
-
-alter table groups
-    owner to postgres;
-     */
-
     @Autowired
     @Bean
     open fun getTransactionManager(

@@ -15,59 +15,19 @@ open class GroupRepository : BaseRepository<Group, Long> {
     @Autowired
     private lateinit var sessionFactory: SessionFactory
 
+    private fun getSession() = sessionFactory.currentSession
+
     override fun save(item: Group) {
-        val session = sessionFactory.currentSession
-        session.save(item)
+        getSession().save(item)
     }
 
-    override fun get(primaryKey: Long): Group? {
-        val session = sessionFactory.currentSession
-        return session.get(Group::class.java, primaryKey)
-    }
+    override fun get(primaryKey: Long): Group? =
+        getSession().get(Group::class.java, primaryKey)
 
-    override fun getAll(): List<Group> {
-        TODO("Not yet implemented")
-    }
+    @Suppress("UNCHECKED_CAST")
+    override fun getAll() =
+        getSession().createQuery("from Group").list() as? List<Group> ?: emptyList()
 
-    override fun delete(id: Long) {
-        TODO("Not yet implemented")
-    }
+    override fun delete(item: Group) =
+        getSession().delete(item)
 }
-/*
-@Repository
-@Transactional
-class BankAccountDAO {
-
-    fun listBankAccountInfo(): List<BankAccountInfo> {
-        val sql = ("Select new " + BankAccountInfo::class.java.getName() //
-                + "(e.id,e.fullName,e.balance) " //
-                + " from " + BankAccount::class.java.getName() + " e ")
-        val session: Session = sessionFactory!!.currentSession
-        val query: Query<BankAccountInfo> = session.createQuery(sql, BankAccountInfo::class.java)
-        return query.getResultList()
-    }
-
-    // MANDATORY: Transaction must be created before.
-    @Transactional(propagation = Propagation.MANDATORY)
-    @Throws(BankTransactionException::class)
-    fun addAmount(id: Long, amount: Double) {
-        val account: BankAccount = findById(id) ?: throw BankTransactionException("Account not found $id")
-        val newBalance: Double = account.getBalance() + amount
-        if (account.getBalance() + amount < 0) {
-            throw BankTransactionException(
-                "The money in the account '" + id + "' is not enough (" + account.getBalance() + ")"
-            )
-        }
-        account.setBalance(newBalance)
-    }
-
-    // Do not catch BankTransactionException in this method.
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = BankTransactionException::class)
-    @Throws(
-        BankTransactionException::class
-    )
-    fun sendMoney(fromAccountId: Long, toAccountId: Long, amount: Double) {
-        addAmount(toAccountId, amount)
-        addAmount(fromAccountId, -amount)
-    }
-}*/
