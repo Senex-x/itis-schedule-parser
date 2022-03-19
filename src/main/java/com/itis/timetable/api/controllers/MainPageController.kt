@@ -14,8 +14,12 @@ class MainPageController {
 
     @GetMapping("/")
     fun getMainPage(): String {
-        tester.test()
+        test()
         return "main_page"
+    }
+
+    private fun test() {
+
     }
 }
 
