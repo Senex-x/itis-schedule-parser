@@ -1,10 +1,8 @@
-package com.itis.timetable.parser
+package com.itis.timetable.api.controllers
 
 import com.itis.timetable.data.models.group.Group
 import com.itis.timetable.data.repositories.GroupRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping

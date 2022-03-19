@@ -1,4 +1,4 @@
-package com.itis.timetable.parser
+package com.itis.timetable
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan
