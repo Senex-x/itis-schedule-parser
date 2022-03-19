@@ -14,7 +14,6 @@ class MainPageController {
     @Autowired
     lateinit var tester: Tester
 
-
     @GetMapping("/")
     fun getMainPage(): String {
         tester.test()
@@ -25,7 +24,7 @@ class MainPageController {
 @Component
 class Tester {
     @Autowired
-    private lateinit var repo: GroupRepository
+    lateinit var repo: GroupRepository
 
     fun test() {
         repo.save(Group(-1, "sd;f", 2))
