@@ -1,4 +1,4 @@
-package com.itis.timetable.parser
+package com.itis.timetable.api.controllers
 
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
