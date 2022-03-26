@@ -6,7 +6,6 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.util.Objects;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -14,6 +13,12 @@ import java.util.Objects;
 @Entity
 @Table(name = "groups", schema = "public")
 public class Group {
+    public Group(long id, String name, int courseNumber) {
+        this.id = id;
+        this.name = name;
+        this.courseNumber = courseNumber;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
