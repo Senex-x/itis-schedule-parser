@@ -11,7 +11,7 @@ package com.itis.timetable.data.models.subject
         )
     ],
 )*/
-data class Subject(
+data class SubjectKt(
     val id: Long,
     val dailyScheduleId: Long,
     val numberInDay: Int,
