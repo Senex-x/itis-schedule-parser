@@ -1,6 +1,5 @@
 package com.itis.timetable.parser
 
-import com.google.api.client.auth.oauth2.AuthorizationCodeFlow
 import com.google.api.client.auth.oauth2.Credential
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
@@ -8,7 +7,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
-import com.google.api.client.http.HttpRequest
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.gson.GsonFactory
@@ -17,11 +15,16 @@ import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsRequestInitializer
 import com.google.api.services.sheets.v4.SheetsScopes
 import com.google.api.services.sheets.v4.model.ValueRange
+import com.itis.timetable.data.models.schedule.Schedule
+import com.itis.timetable.data.models.subject.Subject
+import com.itis.timetable.data.models.subject.SubjectKt
+import org.springframework.cglib.core.ClassesKey
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStreamReader
 import java.security.GeneralSecurityException
+import java.security.PrivateKey
 import java.util.*
 
 class ParserTest {
@@ -31,6 +34,7 @@ object SheetsQuickstart {
     private const val APPLICATION_NAME = "Google Sheets API Java Quickstart"
     private val JSON_FACTORY: JsonFactory = GsonFactory.getDefaultInstance()
     private const val TOKENS_DIRECTORY_PATH = "tokens"
+    private val HTTP_TRANSPORT: NetHttpTransport = GoogleNetHttpTransport.newTrustedTransport()
 
     /**
      * Global instance of the scopes required by this quickstart.
@@ -47,16 +51,16 @@ object SheetsQuickstart {
      */
     @Throws(IOException::class)
     private fun getCredentials(HTTP_TRANSPORT: NetHttpTransport): Credential {
-       /* val f = File("/")
-        f.listFiles().iterator().forEachRemaining {
-            println(it.name)
-        }*/
+        /* val f = File("/")
+         f.listFiles().iterator().forEachRemaining {
+             println(it.name)
+         }*/
         // Load client secrets.
 
-        val `in` = SheetsQuickstart::class.java.getResourceAsStream(CREDENTIALS_FILE_PATH)
-            ?: throw FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH)
+        val inputStream = SheetsQuickstart::class.java.getResourceAsStream(CREDENTIALS_FILE_PATH)
+            ?: throw FileNotFoundException("Resource not found: $CREDENTIALS_FILE_PATH")
 
-        val clientSecrets: GoogleClientSecrets = GoogleClientSecrets.load(JSON_FACTORY, InputStreamReader(`in`))
+        val clientSecrets: GoogleClientSecrets = GoogleClientSecrets.load(JSON_FACTORY, InputStreamReader(inputStream))
 
         // Build flow and trigger user authorization request.
         val flow: GoogleAuthorizationCodeFlow = GoogleAuthorizationCodeFlow.Builder(
@@ -70,41 +74,73 @@ object SheetsQuickstart {
     }
 
 
-    fun test() {
-        val transport = GoogleNetHttpTransport.newTrustedTransport()
-        val spreadsheetId = "1wDMuQdYC4ewmW6qSUPFN4VL5_0cxAnI03QcSbIHrla4"
-        val range = "C3"
-        //val service = Sheets.Builder(transport, JSON_FACTORY, ).build()
-    }
+    private const val LEFT_START = "C"
+    private const val TOP_START = "3"
+    private const val RIGHT_END = "BA"
+    private const val BOTTOM_END = "45"
+    private const val CLASSES_PER_DAY = 7
+    private val PERIODS = listOf(
+        "08:30" to "10:00",
+        "10:10" to "11:40",
+        "11:50" to "13:20",
+        "14:00" to "15:30",
+        "15:40" to "17:10",
+        "17:50" to "19:20",
+        "19:30" to "21:00",
+    )
 
-    /**
-     * Prints the names and majors of students in a sample spreadsheet:
-     * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-     */
-    @Throws(IOException::class, GeneralSecurityException::class)
+    private lateinit var service: Sheets
+    private const val spreadsheetId = "1wDMuQdYC4ewmW6qSUPFN4VL5_0cxAnI03QcSbIHrla4"
+
     @JvmStatic
     fun main(args: Array<String>) {
         // Build a new authorized API client service.
-        val HTTP_TRANSPORT: NetHttpTransport = GoogleNetHttpTransport.newTrustedTransport()
-        val spreadsheetId = "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
-        val range = "Class Data!A2:E"
-        val initializer = SheetsRequestInitializer(spreadsheetId)
-
-        val service: Sheets = Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+        service = Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
             .setApplicationName(APPLICATION_NAME)
             .build()
-        val response: ValueRange = service.spreadsheets().values()
-            .get(spreadsheetId, range)
-            .execute()
-        val values: List<List<Any>> = response.getValues()
-        if (values == null || values.isEmpty()) {
-            println("No data found.")
-        } else {
-            println("Name, Major")
-            for (row in values) {
-                // Print columns A and E, which correspond to indices 0 and 4.
-                System.out.printf("%s, %s\n", row[0], row[4])
+
+        val groupsRange = "C3:3"
+        val groupValues = execute(groupsRange)
+        val groupsCount = groupValues[0].filter { cell -> cell.indexOf('-') != -1 }.size
+
+        //val tableRange = "$LEFT_START$TOP_START:$RIGHT_END$BOTTOM_END"
+        //val table = execute(tableRange)
+
+        for (groupIndex in 0 until groupsCount) { // 4 - 10
+            val groupColumnName = (3 + groupIndex).toColumnName()
+
+            for (dayIndex in 0 until 6) {
+                val dayValues = execute(
+                    "$groupColumnName${4 + dayIndex * CLASSES_PER_DAY}:$groupColumnName${4 + (dayIndex + 1) * CLASSES_PER_DAY - 1}"
+                )
             }
         }
+
+/*
+        for(groupNumber in )
+
+        val groupName =
+        for(dayNumber in 1..6) {
+
+        }
+
+        for ((i, row) in values.withIndex()) {
+            println(row)
+
+
+        }*/
     }
+
+    private fun <T> print(matrix: List<List<T>>) {
+        for (row in matrix) {
+            for (item in row) {
+                print("$item ")
+            }
+            println()
+        }
+    }
+
+    private fun execute(range: String) = service.spreadsheets().values()
+        .get(spreadsheetId, range)
+        .execute().getValues() as List<List<String>>
 }
