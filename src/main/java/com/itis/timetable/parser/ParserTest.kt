@@ -12,13 +12,17 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
+import com.itis.timetable.data.models.group.Group
 import com.itis.timetable.data.models.schedule.DailySchedule
 import com.itis.timetable.data.models.schedule.DailyScheduleEntity
+import com.itis.timetable.data.models.schedule.Schedule
+import com.itis.timetable.data.models.schedule.ScheduleEntity
 import com.itis.timetable.data.models.subject.Subject
 import com.itis.timetable.data.models.subject.SubjectType
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
+import java.lang.IllegalArgumentException
 import java.time.DayOfWeek
 import java.util.*
 
@@ -85,14 +89,14 @@ object SheetsQuickstart {
             .build()
 
         val groupsRange = "C3:3"
-        val groupValues = execute(groupsRange)
-        val groupsCount = groupValues[0].filter { cell -> cell.indexOf('-') != -1 }.size
+        val groupValues = execute(groupsRange)[0]
+        val groupsCount = groupValues.filter { cell -> cell.indexOf('-') != -1 }.size
 
         //val tableRange = "$LEFT_START$TOP_START:$RIGHT_END$BOTTOM_END"
         //val table = execute(tableRange)
 
         for (groupIndex in 0 until groupsCount) {
-            println("Group =================================== $groupIndex")
+            println("Group ========================================= $groupIndex")
             val groupColumnName = (3 + groupIndex).toColumnName()
 
             val weekRange = "$groupColumnName${TOP_START.toInt() + 1}:$groupColumnName$BOTTOM_END" // C4:C45
@@ -103,11 +107,12 @@ object SheetsQuickstart {
                 val subjectIndexInDay = subjectIndex % CLASSES_PER_DAY
                 val dailyScheduleIndex = subjectIndex / CLASSES_PER_DAY
 
-                if (subjectValueArray.isNotEmpty()) {
+                if (subjectValueArray.isNotEmpty() && subjectValueArray[0].isNotBlank()) {
+                    println(subjectIndex)
                     val subjectValue = subjectValueArray[0].replace("\n", "")
                     val subject = getSubject(subjectIndexInDay, subjectValue)
                     weekSubjects.add(subject)
-                    println(subject)
+                    println("Subject: $subject")
                 }
 
                 if (subjectIndexInDay == CLASSES_PER_DAY - 1 || subjectIndex == weekValues.size - 1) {
@@ -121,21 +126,56 @@ object SheetsQuickstart {
                         weekSubjects
                     )
 
-                    println(dailySchedule)
+                    //println(dailySchedule)
                     weekSubjects = weekSubjects.toMutableList()
                     weekSubjects.clear()
                 }
             }
 
-            break
+            val scheduleEntity = ScheduleEntity(
+                0,
+                0,
+            )
+
+            val group = Group(
+                0,
+                groupValues[groupIndex],
+                getCourseNumber(groupIndex, groupValues)
+            )
+
+            println(group)
+
+            val dailySchedules = mutableListOf<DailySchedule>()
+
+            val schedule = Schedule(
+                scheduleEntity,
+                group,
+                dailySchedules
+            )
         }
+    }
+
+    private fun getCourseNumber(groupIndex: Int, groupValues: List<String>): Int {
+        var prefix = ""
+        var courseNumber = 0
+        for ((index, groupName) in groupValues.withIndex()) {
+            val groupPrefix = groupName.substring(0, 3)
+            if (groupPrefix != prefix) {
+                prefix = groupPrefix
+                courseNumber++
+            }
+            if (index == groupIndex) {
+                return courseNumber
+            }
+        }
+        throw IllegalArgumentException()
     }
 
     private fun getSubject(subjectIndexInDay: Int, subjectValue: String): Subject {
         println("------------------------------------------------")
         println("Subject value: ${subjectValue.replace('\n', ' ')}")
         val prof = getProfessorInfo(subjectValue)
-        //println("Professor: $prof")
+        println("Professor: $prof")
         val room = getRoom(subjectValue.substring(prof.endIndex))
         //println("Room: $room")D
         val subjectName = getSubjectName(subjectValue.substring(0, prof.startIndex))
@@ -154,15 +194,20 @@ object SheetsQuickstart {
     }
 
     // не для предметов с несколькими преподами
-// не для физры
+    // не для физры
     private fun getProfessorInfo(value: String): ProfessorInfo {
         val firstIndexOfDot = value.indexOf('.')
+        if (firstIndexOfDot == -1) {
+            return emptyProfessorInfo(value)
+        }
         val subjectNameAndProfessorSurname = value.substring(0, firstIndexOfDot - 2)
         val professorSurnameStartIndex = subjectNameAndProfessorSurname.lastIndexOf(' ') + 1
         val professorSurname = subjectNameAndProfessorSurname.substring(professorSurnameStartIndex)
         val professorName = value.substring(firstIndexOfDot - 1, firstIndexOfDot + 1)
+        if(professorName[0] !in 'А'..'Я') return emptyProfessorInfo(value)
         val professorPatronymicEndIndex = firstIndexOfDot + 3
         val professorPatronymic = value.substring(firstIndexOfDot + 1, professorPatronymicEndIndex)
+        if(professorPatronymic[0] !in 'А'..'Я') return emptyProfessorInfo(value)
         return ProfessorInfo(
             professorSurname,
             professorName,
@@ -171,6 +216,16 @@ object SheetsQuickstart {
             professorPatronymicEndIndex
         )
     }
+
+    private fun emptyProfessorInfo(value: String) = ProfessorInfo(
+        "",
+        "",
+        "",
+        (value.indexOfFirst { char -> char in '0'..'9' } - 1).takeIf { int -> int != -2 }
+            ?: (value.length - 1),
+        value.indexOfFirst { char -> char in '0'..'9' }.takeIf { int -> int != -1 }
+            ?: value.length,
+    )
 
     // принимает строку до имени преподавателя
     private fun getSubjectName(value: String): String {

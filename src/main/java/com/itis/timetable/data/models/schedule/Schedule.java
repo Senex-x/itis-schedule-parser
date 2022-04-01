@@ -11,11 +11,11 @@ import java.util.List;
 @Setter
 @ToString
 public class Schedule {
-    private ScheduleEntityKt schedule;
+    private ScheduleEntity schedule;
     private Group group;
     private List<DailySchedule> dailySchedules;
 
-    public Schedule(ScheduleEntityKt schedule, Group group, List<DailySchedule> dailySchedules) {
+    public Schedule(ScheduleEntity schedule, Group group, List<DailySchedule> dailySchedules) {
         this.schedule = schedule;
         this.group = group;
         this.dailySchedules = dailySchedules;
