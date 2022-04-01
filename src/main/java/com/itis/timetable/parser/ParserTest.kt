@@ -5,26 +5,20 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.JsonFactory
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.sheets.v4.Sheets
-import com.google.api.services.sheets.v4.SheetsRequestInitializer
 import com.google.api.services.sheets.v4.SheetsScopes
 import com.google.api.services.sheets.v4.model.ValueRange
-import com.itis.timetable.data.models.schedule.Schedule
-import com.itis.timetable.data.models.subject.Subject
-import com.itis.timetable.data.models.subject.SubjectKt
-import org.springframework.cglib.core.ClassesKey
+import com.google.api.services.sheets.v4.model.DimensionRange
+import java.awt.Dimension
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStreamReader
-import java.security.GeneralSecurityException
-import java.security.PrivateKey
 import java.util.*
 
 class ParserTest {
@@ -74,6 +68,7 @@ object SheetsQuickstart {
     }
 
 
+    private const val SHEET_NAME = "'расписание занятий 2 с 2021-2022'"
     private const val LEFT_START = "C"
     private const val TOP_START = "3"
     private const val RIGHT_END = "BA"
@@ -91,6 +86,7 @@ object SheetsQuickstart {
 
     private lateinit var service: Sheets
     private const val spreadsheetId = "1wDMuQdYC4ewmW6qSUPFN4VL5_0cxAnI03QcSbIHrla4"
+    private const val COPY_SHEET_ID = "1l5AdcnA_htmTWqcdVMYnTwJCiHQ5rYKHUDFkrpA5dqw"
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -107,12 +103,21 @@ object SheetsQuickstart {
         //val table = execute(tableRange)
 
         for (groupIndex in 0 until groupsCount) { // 4 - 10
+            println("Group =================================== $groupIndex")
             val groupColumnName = (3 + groupIndex).toColumnName()
 
             for (dayIndex in 0 until 6) {
-                val dayValues = execute(
-                    "$groupColumnName${4 + dayIndex * CLASSES_PER_DAY}:$groupColumnName${4 + (dayIndex + 1) * CLASSES_PER_DAY - 1}"
-                )
+                val dayRange = "$groupColumnName${4 + dayIndex * CLASSES_PER_DAY}:" +
+                        "$groupColumnName${4 + (dayIndex + 1) * CLASSES_PER_DAY - 1}"
+                println("DAYRANGE: $dayRange")
+
+                val dayValues = execute(dayRange)
+                for(subjectValue in dayValues) {
+                    println("Subject ----------------------- " +
+                            "$groupColumnName${4 + dayIndex * CLASSES_PER_DAY}:" +
+                            "$groupColumnName${4 + (dayIndex + 1) * CLASSES_PER_DAY - 1}")
+                    println(subjectValue)
+                }
             }
         }
 
@@ -140,7 +145,10 @@ object SheetsQuickstart {
         }
     }
 
+    private fun executeTest(range: String) = service.spreadsheets().values()
+        .get(spreadsheetId, range).execute().getValues()
+
     private fun execute(range: String) = service.spreadsheets().values()
-        .get(spreadsheetId, range)
+        .get(COPY_SHEET_ID, range)
         .execute().getValues() as List<List<String>>
 }
