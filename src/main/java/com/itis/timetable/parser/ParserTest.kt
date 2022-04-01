@@ -13,6 +13,7 @@ import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
 import com.itis.timetable.data.models.subject.Subject
+import com.itis.timetable.data.models.subject.SubjectType
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -101,15 +102,25 @@ object SheetsQuickstart {
                 val subjectIndexInDay = subjectIndex % CLASSES_PER_DAY
                 println("Subject value: ${subjectValue.replace('\n', ' ')}")
                 val prof = getProfessorInfo(subjectValue)
+                println("------------------------------------------------")
                 println("Professor: $prof")
-                println("-------------------- Room: ${getRoom(subjectValue.substring(prof.endIndex))}")
-/*
+                val room = getRoom(subjectValue.substring(prof.endIndex))
+                println("Room: $room")
+                val subjectName = getSubjectName(subjectValue.substring(0, prof.startIndex))
+                println("Subject name: $subjectName")
+
                 val subject = Subject(
                     0, 0,
                     subjectIndexInDay,
                     PERIODS[subjectIndexInDay].first, PERIODS[subjectIndexInDay].second,
+                    subjectName,
+                    room,
+                    if(room.length == 4) SubjectType.SEMINAR else SubjectType.LECTURE,
+                    true, true,
+                    prof.name, prof.surname, prof.patronymic,
+                )
 
-                )*/
+                println("Subject: $subject")
             }
 
             break
@@ -134,15 +145,15 @@ object SheetsQuickstart {
     // не для предметов с несколькими преподами
     // не для физры
 
-    fun getProfessorInfo(value: String): ProfessorName {
-        val firstIndexOfDot = value.indexOf('.') // second first patro
+    private fun getProfessorInfo(value: String): ProfessorInfo {
+        val firstIndexOfDot = value.indexOf('.')
         val subjectNameAndProfessorSurname = value.substring(0, firstIndexOfDot - 2)
         val professorSurnameStartIndex = subjectNameAndProfessorSurname.lastIndexOf(' ') + 1
         val professorSurname = subjectNameAndProfessorSurname.substring(professorSurnameStartIndex)
         val professorName = value.substring(firstIndexOfDot - 1, firstIndexOfDot + 1)
         val professorPatronymicEndIndex = firstIndexOfDot + 3
         val professorPatronymic = value.substring(firstIndexOfDot + 1, professorPatronymicEndIndex)
-        return ProfessorName(
+        return ProfessorInfo(
             professorSurname,
             professorName,
             professorPatronymic,
@@ -151,9 +162,14 @@ object SheetsQuickstart {
         )
     }
 
+    // принимает строку до имени преподавателя
+    private fun getSubjectName(value: String): String {
+        return value
+    }
 
+    // принимает строку после имени препода
     // не для пар с несколькими группами
-    fun getRoom(value: String): String {
+    private fun getRoom(value: String): String {
         val roomNumberStartIndex = value.indexOfFirst { char -> char in '0'..'9' }
         if (roomNumberStartIndex == -1) {
             return ""
@@ -166,7 +182,7 @@ object SheetsQuickstart {
         return value.substring(roomNumberStartIndex, roomNumberEndInd).takeIf { string -> string.length > 2 } ?: ""
     }
 
-    data class ProfessorName(
+    data class ProfessorInfo(
         val surname: String,
         val name: String,
         val patronymic: String,

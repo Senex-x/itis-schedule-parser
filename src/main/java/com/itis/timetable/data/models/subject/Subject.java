@@ -6,7 +6,6 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.util.Objects;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -41,6 +40,22 @@ public class Subject {
 
     private Boolean isOnEveryWeek() {
         return isOnEvenWeeks && isOnOddWeeks;
+    }
+
+    public Subject(long id, long dailyScheduleId, int numberInDay, String startTime, String endTime, String name, String room, SubjectType type, Boolean isOnEvenWeeks, Boolean isOnOddWeeks, String teacherName, String teacherSurname, String teacherPatronymic) {
+        this.id = id;
+        this.dailyScheduleId = dailyScheduleId;
+        this.numberInDay = numberInDay;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.name = name;
+        this.room = room;
+        this.type = type;
+        this.isOnEvenWeeks = isOnEvenWeeks;
+        this.isOnOddWeeks = isOnOddWeeks;
+        this.teacherName = teacherName;
+        this.teacherSurname = teacherSurname;
+        this.teacherPatronymic = teacherPatronymic;
     }
 
     @Override
