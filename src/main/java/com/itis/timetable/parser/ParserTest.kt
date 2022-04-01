@@ -12,12 +12,8 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
-import com.google.api.services.sheets.v4.model.ValueRange
-import com.google.api.services.sheets.v4.model.DimensionRange
-import java.awt.Dimension
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.IOException
 import java.io.InputStreamReader
 import java.util.*
 
@@ -30,21 +26,10 @@ object SheetsQuickstart {
     private const val TOKENS_DIRECTORY_PATH = "tokens"
     private val HTTP_TRANSPORT: NetHttpTransport = GoogleNetHttpTransport.newTrustedTransport()
 
-    /**
-     * Global instance of the scopes required by this quickstart.
-     * If modifying these scopes, delete your previously saved tokens/ folder.
-     */
     private val SCOPES: List<String> = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY)
     private const val CREDENTIALS_FILE_PATH = "/credentials.json"
 
-    /**
-     * Creates an authorized Credential object.
-     * @param HTTP_TRANSPORT The network HTTP Transport.
-     * @return An authorized Credential object.
-     * @throws IOException If the credentials.json file cannot be found.
-     */
-    @Throws(IOException::class)
-    private fun getCredentials(HTTP_TRANSPORT: NetHttpTransport): Credential {
+    private fun getCredentials(httpTransport: NetHttpTransport): Credential {
         /* val f = File("/")
          f.listFiles().iterator().forEachRemaining {
              println(it.name)
@@ -58,7 +43,7 @@ object SheetsQuickstart {
 
         // Build flow and trigger user authorization request.
         val flow: GoogleAuthorizationCodeFlow = GoogleAuthorizationCodeFlow.Builder(
-            HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES
+            httpTransport, JSON_FACTORY, clientSecrets, SCOPES
         )
             .setDataStoreFactory(FileDataStoreFactory(File(TOKENS_DIRECTORY_PATH)))
             .setAccessType("offline")
@@ -66,7 +51,6 @@ object SheetsQuickstart {
         val receiver: LocalServerReceiver = LocalServerReceiver.Builder().setPort(8888).build()
         return AuthorizationCodeInstalledApp(flow, receiver).authorize("user")
     }
-
 
     private const val SHEET_NAME = "'расписание занятий 2 с 2021-2022'"
     private const val LEFT_START = "C"
@@ -102,24 +86,34 @@ object SheetsQuickstart {
         //val tableRange = "$LEFT_START$TOP_START:$RIGHT_END$BOTTOM_END"
         //val table = execute(tableRange)
 
-        for (groupIndex in 0 until groupsCount) { // 4 - 10
+        for (groupIndex in 0 until groupsCount) {
             println("Group =================================== $groupIndex")
             val groupColumnName = (3 + groupIndex).toColumnName()
 
-            for (dayIndex in 0 until 6) {
-                val dayRange = "$groupColumnName${4 + dayIndex * CLASSES_PER_DAY}:" +
-                        "$groupColumnName${4 + (dayIndex + 1) * CLASSES_PER_DAY - 1}"
-                println("DAYRANGE: $dayRange")
+            val weekRange = "$groupColumnName${TOP_START.toInt() + 1}:$groupColumnName$BOTTOM_END" // C4:C45
+            println(weekRange)
+            val weekValues = execute(weekRange)
 
-                val dayValues = execute(dayRange)
-                for(subjectValue in dayValues) {
-                    println("Subject ----------------------- " +
-                            "$groupColumnName${4 + dayIndex * CLASSES_PER_DAY}:" +
-                            "$groupColumnName${4 + (dayIndex + 1) * CLASSES_PER_DAY - 1}")
-                    println(subjectValue)
-                }
+            for ((subjectIndex, subjectValueArray) in weekValues.withIndex()) {
+                if(subjectValueArray.isEmpty()) continue
+                val subjectValue = subjectValueArray[0]
+                val subjectIndexInDay = subjectIndex % CLASSES_PER_DAY
+                println("Subject value: $subjectValue")
+                val prof = getProfessorInfo(subjectValue)
+
+/*
+                val subject = Subject(
+                    0, 0,
+                    subjectIndexInDay,
+                    PERIODS[subjectIndexInDay].first, PERIODS[subjectIndexInDay].second,
+
+                )*/
             }
+
+            break
         }
+
+
 
 /*
         for(groupNumber in )
@@ -135,6 +129,28 @@ object SheetsQuickstart {
 
         }*/
     }
+
+    // не для предметов с несколькими преподами
+    // не для физры
+    @JvmStatic
+    fun getProfessorInfo(value: String): ProfessorName {
+        val firstIndexOfDot = value.indexOf('.') // second first patro
+        val subjectNameAndProfessorSurname = value.substring(0, firstIndexOfDot - 2)
+        val professorSurnameStartIndex = subjectNameAndProfessorSurname.lastIndexOf(' ') + 1
+        val professorSurname = subjectNameAndProfessorSurname.substring(professorSurnameStartIndex)
+        val professorName = value.substring(firstIndexOfDot - 1, firstIndexOfDot + 1)
+        val professorPatronymicEndIndex = firstIndexOfDot + 3
+        val professorPatronymic = value.substring(firstIndexOfDot + 1, professorPatronymicEndIndex)
+        return ProfessorName(professorSurname, professorName, professorPatronymic, professorSurnameStartIndex, professorPatronymicEndIndex)
+    }
+
+    data class ProfessorName(
+        val surname: String,
+        val name: String,
+        val patronymic: String,
+        val startIndex: Int,
+        val endIndex: Int
+    )
 
     private fun <T> print(matrix: List<List<T>>) {
         for (row in matrix) {
