@@ -5,5 +5,5 @@ import com.itis.timetable.data.models.group.GroupKt
 data class Schedule(
     val schedule: ScheduleEntity,
     val group: GroupKt,
-    val dailySchedules: List<DailySchedule>,
+    val dailySchedules: List<DailyScheduleKt>,
 )

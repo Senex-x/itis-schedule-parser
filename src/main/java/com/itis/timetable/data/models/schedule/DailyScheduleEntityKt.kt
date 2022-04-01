@@ -11,7 +11,7 @@ package com.itis.timetable.data.models.schedule
         )
     ],
 )*/
-data class DailyScheduleEntity(
+data class DailyScheduleEntityKt(
     val id: Long,
     val scheduleId: Long,
     val dayName: String,
