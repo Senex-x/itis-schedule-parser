@@ -12,6 +12,7 @@ import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.store.FileDataStoreFactory
 import com.google.api.services.sheets.v4.Sheets
 import com.google.api.services.sheets.v4.SheetsScopes
+import com.itis.timetable.data.models.subject.Subject
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -95,12 +96,13 @@ object SheetsQuickstart {
             val weekValues = execute(weekRange)
 
             for ((subjectIndex, subjectValueArray) in weekValues.withIndex()) {
-                if(subjectValueArray.isEmpty()) continue
+                if (subjectValueArray.isEmpty()) continue
                 val subjectValue = subjectValueArray[0]
                 val subjectIndexInDay = subjectIndex % CLASSES_PER_DAY
-                println("Subject value: $subjectValue")
+                println("Subject value: ${subjectValue.replace('\n', ' ')}")
                 val prof = getProfessorInfo(subjectValue)
-
+                println("Professor: $prof")
+                println("-------------------- Room: ${getRoom(subjectValue.substring(prof.endIndex))}")
 /*
                 val subject = Subject(
                     0, 0,
@@ -112,7 +114,6 @@ object SheetsQuickstart {
 
             break
         }
-
 
 
 /*
@@ -132,7 +133,7 @@ object SheetsQuickstart {
 
     // не для предметов с несколькими преподами
     // не для физры
-    @JvmStatic
+
     fun getProfessorInfo(value: String): ProfessorName {
         val firstIndexOfDot = value.indexOf('.') // second first patro
         val subjectNameAndProfessorSurname = value.substring(0, firstIndexOfDot - 2)
@@ -141,7 +142,28 @@ object SheetsQuickstart {
         val professorName = value.substring(firstIndexOfDot - 1, firstIndexOfDot + 1)
         val professorPatronymicEndIndex = firstIndexOfDot + 3
         val professorPatronymic = value.substring(firstIndexOfDot + 1, professorPatronymicEndIndex)
-        return ProfessorName(professorSurname, professorName, professorPatronymic, professorSurnameStartIndex, professorPatronymicEndIndex)
+        return ProfessorName(
+            professorSurname,
+            professorName,
+            professorPatronymic,
+            professorSurnameStartIndex,
+            professorPatronymicEndIndex
+        )
+    }
+
+
+    // не для пар с несколькими группами
+    fun getRoom(value: String): String {
+        val roomNumberStartIndex = value.indexOfFirst { char -> char in '0'..'9' }
+        if (roomNumberStartIndex == -1) {
+            return ""
+        }
+        val roomNumberEndInd = (
+                value.substring(roomNumberStartIndex)
+                    .indexOfFirst { char -> char !in '0'..'9' }
+                    .takeIf { index -> index != -1 } ?: value.substring(roomNumberStartIndex).length
+                ) + roomNumberStartIndex
+        return value.substring(roomNumberStartIndex, roomNumberEndInd).takeIf { string -> string.length > 2 } ?: ""
     }
 
     data class ProfessorName(
