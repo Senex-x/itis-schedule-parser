@@ -95,13 +95,18 @@ object SheetsQuickstart {
         //val tableRange = "$LEFT_START$TOP_START:$RIGHT_END$BOTTOM_END"
         //val table = execute(tableRange)
 
+        val schedules = mutableListOf<Schedule>()
+
         for (groupIndex in 0 until groupsCount) {
             println("Group ========================================= $groupIndex")
             val groupColumnName = (3 + groupIndex).toColumnName()
+            val scheduleId = groupIndex + 1L
 
             val weekRange = "$groupColumnName${TOP_START.toInt() + 1}:$groupColumnName$BOTTOM_END" // C4:C45
             val weekValues = execute(weekRange)
             var weekSubjects = mutableListOf<Subject>()
+            var dailySchedules = mutableListOf<DailySchedule>()
+
             for ((subjectIndex, subjectValueArray) in weekValues.withIndex()) {
 
                 val subjectIndexInDay = subjectIndex % CLASSES_PER_DAY
@@ -110,7 +115,12 @@ object SheetsQuickstart {
                 if (subjectValueArray.isNotEmpty() && subjectValueArray[0].isNotBlank()) {
                     //println(subjectIndex)
                     val subjectValue = subjectValueArray[0].replace("\n", "")
-                    val subject = getSubject(subjectIndexInDay, subjectValue)
+                    val subject = getSubject(
+                        subjectIndex.toLong(),
+                        dailyScheduleIndex.toLong(),
+                        subjectIndexInDay,
+                        subjectValue,
+                    )
                     weekSubjects.add(subject)
                     //println("Subject: $subject")
                 }
@@ -118,41 +128,47 @@ object SheetsQuickstart {
                 if (subjectIndexInDay == CLASSES_PER_DAY - 1 || subjectIndex == weekValues.size - 1) {
                     val dailySchedule = DailySchedule(
                         DailyScheduleEntity(
-                            0,
-                            0,
+                            dailyScheduleIndex.toLong(),
+                            scheduleId,
                             DayOfWeek.of(dailyScheduleIndex + 1).toString(),
                             dailyScheduleIndex,
                         ),
                         weekSubjects
                     )
 
+                    dailySchedules.add(dailySchedule)
                     //println(dailySchedule)
                     weekSubjects = weekSubjects.toMutableList()
                     weekSubjects.clear()
                 }
             }
 
-            val scheduleEntity = ScheduleEntity(
-                0,
-                0,
-            )
-
+            val groupId = groupIndex + 1L
             val group = Group(
-                0,
+                groupId,
                 groupValues[groupIndex],
                 getCourseNumber(groupIndex, groupValues)
             )
 
-            println(group)
+            val scheduleEntity = ScheduleEntity(
+                scheduleId, // same as group amount
+                groupId,
+            )
 
-            val dailySchedules = mutableListOf<DailySchedule>()
+            //println(group)
 
             val schedule = Schedule(
                 scheduleEntity,
                 group,
                 dailySchedules
             )
+            dailySchedules = dailySchedules.toMutableList()
+            dailySchedules.clear()
+
+            schedules.add(schedule)
         }
+
+        println(schedules)
     }
 
     private fun getCourseNumber(groupIndex: Int, groupValues: List<String>): Int {
@@ -171,7 +187,12 @@ object SheetsQuickstart {
         throw IllegalArgumentException()
     }
 
-    private fun getSubject(subjectIndexInDay: Int, subjectValue: String): Subject {
+    private fun getSubject(
+        subjectId: Long,
+        dailyScheduleId: Long,
+        subjectIndexInDay: Int,
+        subjectValue: String
+    ): Subject {
         //println("------------------------------------------------")
         //println("Subject value: ${subjectValue.replace('\n', ' ')}")
         val prof = getProfessorInfo(subjectValue)
@@ -182,7 +203,7 @@ object SheetsQuickstart {
         //println("Subject name: $subjectName")
 
         return Subject(
-            0, 0,
+            subjectId, dailyScheduleId,
             subjectIndexInDay,
             PERIODS[subjectIndexInDay].first, PERIODS[subjectIndexInDay].second,
             subjectName,
@@ -204,10 +225,10 @@ object SheetsQuickstart {
         val professorSurnameStartIndex = subjectNameAndProfessorSurname.lastIndexOf(' ') + 1
         val professorSurname = subjectNameAndProfessorSurname.substring(professorSurnameStartIndex)
         val professorName = value.substring(firstIndexOfDot - 1, firstIndexOfDot + 1)
-        if(professorName[0] !in 'А'..'Я') return emptyProfessorInfo(value)
+        if (professorName[0] !in 'А'..'Я') return emptyProfessorInfo(value)
         val professorPatronymicEndIndex = firstIndexOfDot + 3
         val professorPatronymic = value.substring(firstIndexOfDot + 1, professorPatronymicEndIndex)
-        if(professorPatronymic[0] !in 'А'..'Я') return emptyProfessorInfo(value)
+        if (professorPatronymic[0] !in 'А'..'Я') return emptyProfessorInfo(value)
         return ProfessorInfo(
             professorSurname,
             professorName,
