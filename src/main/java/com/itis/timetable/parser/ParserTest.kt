@@ -108,11 +108,11 @@ object SheetsQuickstart {
                 val dailyScheduleIndex = subjectIndex / CLASSES_PER_DAY
 
                 if (subjectValueArray.isNotEmpty() && subjectValueArray[0].isNotBlank()) {
-                    println(subjectIndex)
+                    //println(subjectIndex)
                     val subjectValue = subjectValueArray[0].replace("\n", "")
                     val subject = getSubject(subjectIndexInDay, subjectValue)
                     weekSubjects.add(subject)
-                    println("Subject: $subject")
+                    //println("Subject: $subject")
                 }
 
                 if (subjectIndexInDay == CLASSES_PER_DAY - 1 || subjectIndex == weekValues.size - 1) {
@@ -159,7 +159,7 @@ object SheetsQuickstart {
         var prefix = ""
         var courseNumber = 0
         for ((index, groupName) in groupValues.withIndex()) {
-            val groupPrefix = groupName.substring(0, 3)
+            val groupPrefix = groupName.substring(0, 4)
             if (groupPrefix != prefix) {
                 prefix = groupPrefix
                 courseNumber++
@@ -172,10 +172,10 @@ object SheetsQuickstart {
     }
 
     private fun getSubject(subjectIndexInDay: Int, subjectValue: String): Subject {
-        println("------------------------------------------------")
-        println("Subject value: ${subjectValue.replace('\n', ' ')}")
+        //println("------------------------------------------------")
+        //println("Subject value: ${subjectValue.replace('\n', ' ')}")
         val prof = getProfessorInfo(subjectValue)
-        println("Professor: $prof")
+        //println("Professor: $prof")
         val room = getRoom(subjectValue.substring(prof.endIndex))
         //println("Room: $room")D
         val subjectName = getSubjectName(subjectValue.substring(0, prof.startIndex))
