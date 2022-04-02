@@ -1,21 +1,17 @@
 package com.itis.timetable.data.repositories
 
 import com.itis.timetable.data.models.group.Group
-import lombok.NoArgsConstructor
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
-@Repository
 @Transactional
+@Repository
 open class GroupRepository : BaseRepository<Group, Long> {
     @Autowired
     private lateinit var sessionFactory: SessionFactory
-
-    private fun getSession() = sessionFactory.currentSession
+    private fun getSession() = sessionFactory.currentSession!!
 
     override fun save(item: Group) {
         getSession().save(item)
