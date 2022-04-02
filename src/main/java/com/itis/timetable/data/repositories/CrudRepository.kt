@@ -11,4 +11,6 @@ interface CrudRepository<T, K: Serializable> {
     fun getAll(): List<T>
 
     fun delete(item: T)
+
+    fun deleteAll()
 }

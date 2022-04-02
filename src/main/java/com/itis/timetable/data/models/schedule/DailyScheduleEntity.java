@@ -23,7 +23,7 @@ public class DailyScheduleEntity {
     private long scheduleId;
     @Column(name = "day_name")
     private String dayName;
-    @Column(name = "index__in_week")
+    @Column(name = "index_in_week")
     private int indexInWeek;
 
     public DailyScheduleEntity(long id, long scheduleId, String dayName, int indexInWeek) {

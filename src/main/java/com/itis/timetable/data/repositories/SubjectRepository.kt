@@ -12,6 +12,5 @@ open class SubjectRepository(
 ): HibernateRepository<Subject, Long>(
     sessionFactory
 ) {
-    override fun get(primaryKey: Long): Subject? =
-        getSession().get(Subject::class.java, primaryKey)
+    override fun getEntityName() = Subject::class.simpleName!!
 }

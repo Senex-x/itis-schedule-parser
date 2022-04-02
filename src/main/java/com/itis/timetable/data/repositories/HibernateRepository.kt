@@ -1,24 +1,36 @@
 package com.itis.timetable.data.repositories
 
 import org.hibernate.SessionFactory
+import org.springframework.transaction.annotation.Transactional
 import java.io.Serializable
 
-abstract class HibernateRepository<T, K: Serializable>(
+@Transactional
+abstract class HibernateRepository<T, K : Serializable>(
     private val sessionFactory: SessionFactory
-): CrudRepository<T, K> {
-
+) : CrudRepository<T, K> {
     protected fun getSession() = sessionFactory.currentSession!!
+
+    abstract fun getEntityName(): String
 
     @Suppress("UNCHECKED_CAST")
     override fun save(item: T) = getSession()
         .save(item) as K
 
-    abstract override fun get(primaryKey: K): T?
+    @Suppress("UNCHECKED_CAST")
+    override fun get(primaryKey: K) = getSession()
+        .createQuery("from ${getEntityName()} where id = :id").run {
+            setParameter("id", primaryKey)
+            list().firstOrNull() as T?
+        }
 
     @Suppress("UNCHECKED_CAST")
     override fun getAll() = getSession()
-        .createQuery("from Group").list() as List<T>
+        .createQuery("from ${getEntityName()}").list() as List<T>
 
     override fun delete(item: T) = getSession()
         .delete(item)
+
+    override fun deleteAll() {
+        getSession().createQuery("delete from ${getEntityName()}").executeUpdate()
+    }
 }

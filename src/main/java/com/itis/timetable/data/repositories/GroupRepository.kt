@@ -13,6 +13,6 @@ open class GroupRepository(
 ) : HibernateRepository<Group, Long>(
     sessionFactory
 ) {
-    override fun get(primaryKey: Long): Group? =
-        getSession().get(Group::class.java, primaryKey)
+    override fun getEntityName() = Group::class.simpleName!!
 }
+

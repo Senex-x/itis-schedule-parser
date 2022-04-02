@@ -1,6 +1,6 @@
 package com.itis.timetable.data.repositories
 
-import com.itis.timetable.data.models.schedule.DailySchedule
+import com.itis.timetable.data.models.schedule.DailyScheduleEntity
 import org.hibernate.SessionFactory
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -9,9 +9,8 @@ import org.springframework.transaction.annotation.Transactional
 @Repository
 open class DailyScheduleRepository(
     sessionFactory: SessionFactory
-): HibernateRepository<DailySchedule, Long>(
+): HibernateRepository<DailyScheduleEntity, Long>(
     sessionFactory
 ) {
-    override fun get(primaryKey: Long): DailySchedule? =
-        getSession().get(DailySchedule::class.java, primaryKey)
+    override fun getEntityName() = DailyScheduleEntity::class.simpleName!!
 }

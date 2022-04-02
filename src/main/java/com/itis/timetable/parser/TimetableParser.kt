@@ -1,30 +1,22 @@
 package com.itis.timetable.parser
 
-import com.google.api.services.sheets.v4.Sheets
 import com.itis.timetable.data.models.group.Group
 import com.itis.timetable.data.models.schedule.DailySchedule
 import com.itis.timetable.data.models.schedule.DailyScheduleEntity
 import com.itis.timetable.data.models.schedule.Schedule
 import com.itis.timetable.data.models.schedule.ScheduleEntity
 import com.itis.timetable.data.models.subject.Subject
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 import java.time.DayOfWeek
 
-object SheetsQuickstart {
-    private const val SHEET_NAME = "'расписание занятий 2 с 2021-2022'"
-    private const val LEFT_START = "C"
-    private const val TOP_START = "3"
-    private const val RIGHT_END = "BA"
-    private const val BOTTOM_END = "45"
-    private const val CLASSES_PER_DAY = 7
+@Component
+class TimetableParser {
+    @Autowired
+    private lateinit var access: AccessService
 
-    private lateinit var service: Sheets
-    private val access: AccessService = AccessService()
-
-
-    @JvmStatic
-    fun main(args: Array<String>) {
-        service = AuthorizationService().getService()
-        access.service = service
+    fun parse(): List<Schedule> {
+        println("############## PARSING IN PROCESS ##############")
 
         val groupsRange = "C3:3"
         val groupValues = access.execute(groupsRange)[0]
@@ -34,11 +26,14 @@ object SheetsQuickstart {
         var subjectId = 1L
 
         for (groupIndex in 0 until groupsCount) {
-            println("Group ========================================= $groupIndex")
+            if (groupIndex % 2 == 0 || groupIndex == groupsCount - 1)
+                println("# ${(((groupIndex + 1) / groupsCount.toFloat()) * 100).toInt()}% #")
+            //println("Group ========================================= $groupIndex")
             val groupColumnName = (3 + groupIndex).toColumnName()
             val scheduleId = groupIndex + 1L
 
-            val weekRange = "$groupColumnName${TOP_START.toInt() + 1}:$groupColumnName$BOTTOM_END" // C4:C45
+            val weekRange =
+                "$groupColumnName${TOP_START.toInt() + 1}:$groupColumnName${BOTTOM_END}" // C4:C45
             val weekValues = access.execute(weekRange)
 
             val dailySchedules = mutableListOf<DailySchedule>()
@@ -77,7 +72,7 @@ object SheetsQuickstart {
 
 
                     dailySchedules.add(dailySchedule)
-                    println(dailySchedule)
+                    //println(dailySchedule)
                 }
             }
 
@@ -103,8 +98,19 @@ object SheetsQuickstart {
 
             schedules.add(schedule)
 
-            println(schedule)
+            //println(schedule)
         }
-        //println(schedules)
+
+        println("############## PARSING DONE ##############")
+        return schedules
+    }
+
+    companion object {
+        private const val SHEET_NAME = "'расписание занятий 2 с 2021-2022'"
+        private const val LEFT_START = "C"
+        private const val TOP_START = "3"
+        private const val RIGHT_END = "BA"
+        private const val BOTTOM_END = "45"
+        private const val CLASSES_PER_DAY = 7
     }
 }
