@@ -14,10 +14,10 @@ import org.springframework.context.annotation.ComponentScan
         DataSourceAutoConfiguration::class,
         DataSourceTransactionManagerAutoConfiguration::class,
         HibernateJpaAutoConfiguration::class
-    ]
+    ],
+    scanBasePackages = ["com.itis.timetable"],
 )
 @EntityScan(basePackages = ["com.itis.timetable.data.models"])
-@ComponentScan(basePackages = ["com.itis.timetable"])
 open class Application : SpringBootServletInitializer()
 
 fun main(args: Array<String>) {

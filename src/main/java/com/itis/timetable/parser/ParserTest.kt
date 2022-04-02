@@ -19,6 +19,7 @@ import com.itis.timetable.data.models.schedule.Schedule
 import com.itis.timetable.data.models.schedule.ScheduleEntity
 import com.itis.timetable.data.models.subject.Subject
 import com.itis.timetable.data.models.subject.SubjectType
+import com.itis.timetable.data.repositories.ScheduleRepository
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
@@ -83,6 +84,9 @@ object SheetsQuickstart {
 
     @JvmStatic
     fun main(args: Array<String>) {
+
+
+
         // Build a new authorized API client service.
         service = Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
             .setApplicationName(APPLICATION_NAME)

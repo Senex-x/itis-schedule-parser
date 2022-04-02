@@ -1,16 +1,14 @@
-package com.itis.timetable.data.database
+package com.itis.timetable.di
 
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
-import org.springframework.core.env.getProperty
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.orm.hibernate5.HibernateTransactionManager
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean
 import java.util.*
-import javax.sql.DataSource
 
 @Configuration
 open class HibernateConfiguration {
@@ -18,22 +16,29 @@ open class HibernateConfiguration {
     private lateinit var environment: Environment
 
     @Bean
-    open fun sessionFactory() = LocalSessionFactoryBean().apply {
-        setDataSource(getDataSource())
+    @Autowired
+    open fun provideTransactionManager(
+        sessionFactory: SessionFactory
+    ) = HibernateTransactionManager(sessionFactory)
+
+
+    @Bean
+    open fun provideSessionFactory() = LocalSessionFactoryBean().apply {
+        setDataSource(provideDataSource())
         setPackagesToScan("com.itis.timetable")
-        hibernateProperties = properties()
+        hibernateProperties = getProperties()
         afterPropertiesSet()
     }.`object`!!
 
     @Bean
-    open fun getDataSource() = DriverManagerDataSource().apply {
+    open fun provideDataSource() = DriverManagerDataSource().apply {
         setDriverClassName(environment.getProperty("spring.datasource.driver-class-name")!!)
         url = environment.getProperty("spring.datasource.url")
         username = environment.getProperty("spring.datasource.username")
         password = environment.getProperty("spring.datasource.password")
     }
 
-    private fun properties() = Properties().apply {
+    private fun getProperties() = Properties().apply {
         set(
             "hibernate.dialect",
             environment.getProperty("spring.jpa.properties.hibernate.dialect")
@@ -50,13 +55,5 @@ open class HibernateConfiguration {
             "hibernate.hbm2ddl.auto",
             environment.getProperty("hibernate.hbm2ddl.auto")
         )
-    }
-
-    @Bean
-    @Autowired
-    open fun getTransactionManager(
-        sessionFactory: SessionFactory
-    ): HibernateTransactionManager {
-        return HibernateTransactionManager(sessionFactory)
     }
 }

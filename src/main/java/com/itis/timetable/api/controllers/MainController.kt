@@ -2,6 +2,7 @@ package com.itis.timetable.api.controllers
 
 import com.itis.timetable.data.models.group.Group
 import com.itis.timetable.data.repositories.GroupRepository
+import com.itis.timetable.data.repositories.ScheduleRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import org.springframework.stereotype.Controller
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping
 class MainPageController {
     @Autowired
     lateinit var tester: Tester
+    @Autowired
+    lateinit var repo: ScheduleRepository
 
     @GetMapping("/")
     fun getMainPage(): String {
@@ -19,7 +22,7 @@ class MainPageController {
     }
 
     private fun test() {
-
+        repo.get(1)
     }
 }
 

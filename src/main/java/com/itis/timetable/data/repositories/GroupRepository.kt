@@ -8,22 +8,11 @@ import org.springframework.transaction.annotation.Transactional
 
 @Transactional
 @Repository
-open class GroupRepository : BaseRepository<Group, Long> {
-    @Autowired
-    private lateinit var sessionFactory: SessionFactory
-    private fun getSession() = sessionFactory.currentSession!!
-
-    override fun save(item: Group) {
-        getSession().save(item)
-    }
-
+open class GroupRepository(
+    sessionFactory: SessionFactory
+) : HibernateRepository<Group, Long>(
+    sessionFactory
+) {
     override fun get(primaryKey: Long): Group? =
         getSession().get(Group::class.java, primaryKey)
-
-    @Suppress("UNCHECKED_CAST")
-    override fun getAll() =
-        getSession().createQuery("from Group").list() as? List<Group> ?: emptyList()
-
-    override fun delete(item: Group) =
-        getSession().delete(item)
 }

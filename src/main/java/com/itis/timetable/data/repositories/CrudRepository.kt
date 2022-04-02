@@ -1,8 +1,10 @@
 package com.itis.timetable.data.repositories
 
-interface BaseRepository<T, K> {
+import java.io.Serializable
 
-    fun save(item: T)
+interface CrudRepository<T, K: Serializable> {
+
+    fun save(item: T): K
 
     fun get(primaryKey: K): T?
 
