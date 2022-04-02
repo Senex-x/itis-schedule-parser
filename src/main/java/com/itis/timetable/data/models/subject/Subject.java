@@ -14,7 +14,6 @@ import java.util.Objects;
 @Table(name = "subjects", schema = "public")
 public class Subject {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "daily_schedule_id")
     private long dailyScheduleId;

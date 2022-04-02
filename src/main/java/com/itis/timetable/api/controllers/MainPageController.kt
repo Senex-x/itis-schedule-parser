@@ -29,7 +29,7 @@ class Tester {
     lateinit var repo: GroupRepository
 
     fun test() {
-        repo.save(Group(-1, "sd;f", 2))
+        repo.save(Group(1337, "sd;f", 2))
 
         print(repo.get(1))
         print(repo.getAll())

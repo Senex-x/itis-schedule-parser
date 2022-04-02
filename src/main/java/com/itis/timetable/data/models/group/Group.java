@@ -20,7 +20,6 @@ public class Group {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     @Column(name = "course_number")
