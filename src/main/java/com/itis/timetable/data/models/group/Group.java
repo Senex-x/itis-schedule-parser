@@ -25,6 +25,8 @@ public class Group {
     @Column(name = "course_number")
     private int courseNumber;
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
