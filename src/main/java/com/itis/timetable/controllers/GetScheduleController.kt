@@ -1,8 +1,8 @@
-package com.itis.timetable.api.controllers
+package com.itis.timetable.controllers
 
 import com.google.gson.GsonBuilder
-import com.itis.timetable.data.usecase.GetScheduleByGroupId
-import com.itis.timetable.data.usecase.GetScheduleByGroupName
+import com.itis.timetable.usecase.GetScheduleByGroupId
+import com.itis.timetable.usecase.GetScheduleByGroupName
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

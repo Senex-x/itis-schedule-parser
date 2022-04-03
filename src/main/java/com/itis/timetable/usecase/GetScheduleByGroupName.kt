@@ -1,4 +1,4 @@
-package com.itis.timetable.data.usecase
+package com.itis.timetable.usecase
 
 import com.itis.timetable.data.models.schedule.Schedule
 import org.springframework.stereotype.Component

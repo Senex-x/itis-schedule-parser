@@ -1,4 +1,4 @@
-package com.itis.timetable.data.usecase
+package com.itis.timetable.usecase
 
 import com.itis.timetable.data.repositories.GroupRepository
 import org.springframework.stereotype.Component

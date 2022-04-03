@@ -1,4 +1,4 @@
-package com.itis.timetable.data.usecase
+package com.itis.timetable.usecase
 
 import com.itis.timetable.data.models.group.Group
 import com.itis.timetable.data.models.schedule.DailySchedule
