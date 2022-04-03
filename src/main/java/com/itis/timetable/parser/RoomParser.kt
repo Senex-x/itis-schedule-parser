@@ -1,7 +1,9 @@
 package com.itis.timetable.parser
 
-// принимает строку после имени препода
-// не для пар с несколькими группами
+/**
+ * Принимает строку после имени препода
+ * Не для пар с несколькими группами
+ */
 fun parseRoom(value: String): String {
     val roomNumberStartIndex = value.indexOfFirst { char -> char in '0'..'9' }
     if (roomNumberStartIndex == -1) {

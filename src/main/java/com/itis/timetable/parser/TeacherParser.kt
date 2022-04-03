@@ -1,15 +1,9 @@
 package com.itis.timetable.parser
 
-data class ProfessorInfo(
-    val surname: String,
-    val name: String,
-    val patronymic: String,
-    val startIndex: Int,
-    val endIndex: Int
-)
-
-// не для предметов с несколькими преподами
-// не для физры
+/**
+ * Не для предметов с несколькими преподами
+ * Не для физры
+ */
 fun parseProfessorInfo(value: String): ProfessorInfo {
     val firstIndexOfDot = value.indexOf('.')
     if (firstIndexOfDot == -1) return emptyProfessorInfo(value)
@@ -38,4 +32,12 @@ private fun emptyProfessorInfo(value: String) = ProfessorInfo(
         ?: (value.length - 1),
     value.indexOfFirst { char -> char in '0'..'9' }.takeIf { int -> int != -1 }
         ?: value.length,
+)
+
+data class ProfessorInfo(
+    val surname: String,
+    val name: String,
+    val patronymic: String,
+    val startIndex: Int,
+    val endIndex: Int
 )
