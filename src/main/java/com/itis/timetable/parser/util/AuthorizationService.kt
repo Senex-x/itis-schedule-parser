@@ -1,4 +1,4 @@
-package com.itis.timetable.parser
+package com.itis.timetable.parser.util
 
 import com.google.api.client.auth.oauth2.Credential
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp
@@ -30,7 +30,8 @@ class AuthorizationService {
             .build()!!
 
     private fun getCredentials(httpTransport: NetHttpTransport): Credential {
-        val inputStream = SheetsQuickstart::class.java.getResourceAsStream(CREDENTIALS_FILE_PATH)!!
+        // TODO: Inspect
+        val inputStream = Any::class.java.getResourceAsStream(CREDENTIALS_FILE_PATH)!!
 
         val clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, InputStreamReader(inputStream))
 

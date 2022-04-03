@@ -1,4 +1,4 @@
-package com.itis.timetable.parser
+package com.itis.timetable.parser.util
 
 import com.google.api.services.sheets.v4.Sheets
 import org.springframework.beans.factory.annotation.Autowired

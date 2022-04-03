@@ -6,6 +6,7 @@ import com.itis.timetable.data.models.schedule.DailyScheduleEntity
 import com.itis.timetable.data.models.schedule.Schedule
 import com.itis.timetable.data.models.schedule.ScheduleEntity
 import com.itis.timetable.data.models.subject.Subject
+import com.itis.timetable.parser.util.AccessService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.DayOfWeek
