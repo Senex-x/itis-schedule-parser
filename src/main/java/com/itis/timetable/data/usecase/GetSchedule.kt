@@ -17,9 +17,8 @@ class GetSchedule(
 ) {
     operator fun invoke(groupId: Long): Schedule? {
         val group = groupRepository.get(groupId) ?: return null // Invalid id
-        val scheduleEntity = scheduleEntityRepository.getByGroupId(1)
+        val scheduleEntity = scheduleEntityRepository.getByGroupId(group.id)
 
-        /*
         val dailyScheduleEntities = dailyScheduleEntityRepository.getAllByScheduleId(scheduleEntity.id)
         val dailySchedules = mutableListOf<DailySchedule>()
 
@@ -36,8 +35,6 @@ class GetSchedule(
             scheduleEntity,
             group,
             dailySchedules
-        )*/
-
-        return null
+        )
     }
 }

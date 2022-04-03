@@ -15,7 +15,8 @@ class GetScheduleController {
 
     @ResponseBody
     @GetMapping("/schedule/{groupId:[0-9]+}")
-    fun get(@PathVariable groupId: Long): String {
-        return GsonBuilder().setPrettyPrinting().create().toJson(getSchedule(groupId))
-    }
+    fun get(@PathVariable groupId: Long): String = GsonBuilder()
+        .setPrettyPrinting()
+        .create()
+        .toJson(getSchedule(groupId))
 }

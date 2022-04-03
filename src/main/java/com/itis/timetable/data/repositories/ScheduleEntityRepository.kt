@@ -12,7 +12,6 @@ open class ScheduleEntityRepository(
 ) : HibernateRepository<ScheduleEntity, Long>(
     sessionFactory
 ) {
-
     override fun getEntityName() = ScheduleEntity::class.simpleName!!
 
     fun getByGroupId(groupId: Long) = getSession()

@@ -33,7 +33,7 @@ class MainPageController {
 
     @GetMapping("/")
     fun getMainPage(): String {
-        test()
+       // test()
 
         return "main_page"
     }
