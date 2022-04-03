@@ -27,7 +27,6 @@ open class HibernateConfiguration {
         setPackagesToScan("com.itis.timetable")
         hibernateProperties = getProperties()
         afterPropertiesSet()
-        println("!!!!!!!!!!!! $`object`")
     }.`object`!!
 
     @Bean
