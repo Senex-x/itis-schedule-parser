@@ -7,8 +7,6 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
 @Entity
 @Table(name = "subjects", schema = "public")
@@ -68,5 +66,109 @@ public class Subject {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getDailyScheduleId() {
+        return dailyScheduleId;
+    }
+
+    public void setDailyScheduleId(long dailyScheduleId) {
+        this.dailyScheduleId = dailyScheduleId;
+    }
+
+    public int getNumberInDay() {
+        return numberInDay;
+    }
+
+    public void setNumberInDay(int numberInDay) {
+        this.numberInDay = numberInDay;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRoom() {
+        return room;
+    }
+
+    public void setRoom(String room) {
+        this.room = room;
+    }
+
+    public SubjectType getType() {
+        return type;
+    }
+
+    public void setType(SubjectType type) {
+        this.type = type;
+    }
+
+    public Boolean getOnEvenWeeks() {
+        return isOnEvenWeeks;
+    }
+
+    public void setOnEvenWeeks(Boolean onEvenWeeks) {
+        isOnEvenWeeks = onEvenWeeks;
+    }
+
+    public Boolean getOnOddWeeks() {
+        return isOnOddWeeks;
+    }
+
+    public void setOnOddWeeks(Boolean onOddWeeks) {
+        isOnOddWeeks = onOddWeeks;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public String getTeacherSurname() {
+        return teacherSurname;
+    }
+
+    public void setTeacherSurname(String teacherSurname) {
+        this.teacherSurname = teacherSurname;
+    }
+
+    public String getTeacherPatronymic() {
+        return teacherPatronymic;
+    }
+
+    public void setTeacherPatronymic(String teacherPatronymic) {
+        this.teacherPatronymic = teacherPatronymic;
     }
 }

@@ -1,5 +1,6 @@
 package com.itis.timetable.data.repositories
 
+import org.hibernate.Session
 import org.hibernate.SessionFactory
 import org.springframework.transaction.annotation.Transactional
 import java.io.Serializable
@@ -8,7 +9,16 @@ import java.io.Serializable
 abstract class HibernateRepository<T, K : Serializable>(
     private val sessionFactory: SessionFactory
 ) : CrudRepository<T, K> {
-    protected fun getSession() = sessionFactory.currentSession!!
+
+    init {
+        println("????????????? e: ${getEntityName()} f: $sessionFactory")
+    }
+
+    protected fun getSession(): Session {
+        println("############# e: ${getEntityName()} f: $sessionFactory")
+        val currentSession = sessionFactory.currentSession
+        return currentSession!!
+    }
 
     abstract fun getEntityName(): String
 

@@ -1,8 +1,6 @@
 package com.itis.timetable.data.models.schedule;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Column;
@@ -11,8 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
 @Entity
 @Table(name = "schedules")
@@ -24,6 +20,22 @@ public class ScheduleEntity {
 
     public ScheduleEntity(long id, long groupId) {
         this.id = id;
+        this.groupId = groupId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(long groupId) {
         this.groupId = groupId;
     }
 }

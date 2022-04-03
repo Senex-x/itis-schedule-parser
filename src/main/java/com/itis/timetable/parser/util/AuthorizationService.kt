@@ -31,7 +31,7 @@ class AuthorizationService {
 
     private fun getCredentials(httpTransport: NetHttpTransport): Credential {
         // TODO: Inspect
-        val inputStream = Any::class.java.getResourceAsStream(CREDENTIALS_FILE_PATH)!!
+        val inputStream = AuthorizationService::class.java.getResourceAsStream(CREDENTIALS_FILE_PATH)
 
         val clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, InputStreamReader(inputStream))
 

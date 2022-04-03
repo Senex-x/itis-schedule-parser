@@ -7,8 +7,6 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
 @Entity
 @Table(name = "groups", schema = "public")
@@ -25,7 +23,17 @@ public class Group {
     @Column(name = "course_number")
     private int courseNumber;
 
+    public long getId() {
+        return id;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getCourseNumber() {
+        return courseNumber;
+    }
 
     @Override
     public boolean equals(Object o) {

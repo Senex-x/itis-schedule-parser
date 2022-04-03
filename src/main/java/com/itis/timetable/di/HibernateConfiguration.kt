@@ -21,13 +21,13 @@ open class HibernateConfiguration {
         sessionFactory: SessionFactory
     ) = HibernateTransactionManager(sessionFactory)
 
-
     @Bean
     open fun provideSessionFactory() = LocalSessionFactoryBean().apply {
         setDataSource(provideDataSource())
         setPackagesToScan("com.itis.timetable")
         hibernateProperties = getProperties()
         afterPropertiesSet()
+        println("!!!!!!!!!!!! $`object`")
     }.`object`!!
 
     @Bean

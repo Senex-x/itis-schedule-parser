@@ -10,14 +10,16 @@ import org.springframework.stereotype.Component
 
 @Component
 class GetSchedule(
-    private val scheduleEntityRepository: ScheduleEntityRepository,
     private val groupRepository: GroupRepository,
+    private val scheduleEntityRepository: ScheduleEntityRepository,
     private val dailyScheduleEntityRepository: DailyScheduleEntityRepository,
     private val subjectRepository: SubjectRepository,
 ) {
     operator fun invoke(groupId: Long): Schedule? {
         val group = groupRepository.get(groupId) ?: return null // Invalid id
-        val scheduleEntity = scheduleEntityRepository.getByGroupId(group.id)
+        val scheduleEntity = scheduleEntityRepository.getByGroupId(1)
+
+        /*
         val dailyScheduleEntities = dailyScheduleEntityRepository.getAllByScheduleId(scheduleEntity.id)
         val dailySchedules = mutableListOf<DailySchedule>()
 
@@ -34,6 +36,8 @@ class GetSchedule(
             scheduleEntity,
             group,
             dailySchedules
-        )
+        )*/
+
+        return null
     }
 }
