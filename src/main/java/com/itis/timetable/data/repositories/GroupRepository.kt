@@ -14,5 +14,10 @@ open class GroupRepository(
     sessionFactory
 ) {
     override fun getEntityName() = Group::class.simpleName!!
+
+    fun getByName(name: String) = getSession()
+        .createQuery("from ${getEntityName()} where name = :name").apply {
+            setParameter("name", name)
+        }.list().firstOrNull() as Group?
 }
 

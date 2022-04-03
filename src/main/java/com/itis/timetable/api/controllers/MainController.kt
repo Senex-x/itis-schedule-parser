@@ -1,9 +1,9 @@
 package com.itis.timetable.api.controllers
 
 import com.itis.timetable.data.models.group.Group
-import com.itis.timetable.data.repositories.DailyScheduleRepository
+import com.itis.timetable.data.repositories.DailyScheduleEntityRepository
 import com.itis.timetable.data.repositories.GroupRepository
-import com.itis.timetable.data.repositories.ScheduleRepository
+import com.itis.timetable.data.repositories.ScheduleEntityRepository
 import com.itis.timetable.data.repositories.SubjectRepository
 import com.itis.timetable.parser.TimetableParser
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,13 +17,13 @@ class MainPageController {
     lateinit var tester: Tester
 
     @Autowired
-    lateinit var scheduleRepository: ScheduleRepository
+    lateinit var scheduleRepository: ScheduleEntityRepository
 
     @Autowired
     lateinit var groupRepository: GroupRepository
 
     @Autowired
-    lateinit var dailyScheduleRepository: DailyScheduleRepository
+    lateinit var dailyScheduleRepository: DailyScheduleEntityRepository
 
     @Autowired
     lateinit var subjectRepository: SubjectRepository

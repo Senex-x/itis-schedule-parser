@@ -18,10 +18,9 @@ abstract class HibernateRepository<T, K : Serializable>(
 
     @Suppress("UNCHECKED_CAST")
     override fun get(primaryKey: K) = getSession()
-        .createQuery("from ${getEntityName()} where id = :id").run {
+        .createQuery("from ${getEntityName()} where id = :id").apply {
             setParameter("id", primaryKey)
-            list().firstOrNull() as T?
-        }
+        }.list().firstOrNull() as T?
 
     @Suppress("UNCHECKED_CAST")
     override fun getAll() = getSession()
