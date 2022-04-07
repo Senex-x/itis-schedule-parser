@@ -7,26 +7,26 @@ import java.util.List;
 
 @ToString
 public class Schedule {
-    private final ScheduleEntity schedule;
-    private final Group group;
-    private final List<DailySchedule> dailySchedules;
+    private final ScheduleEntity scheduleInfoEntity;
+    private final Group groupEntity;
+    private final List<DailySchedule> dailyScheduleEntities;
 
-    public Schedule(ScheduleEntity schedule, Group group, List<DailySchedule> dailySchedules) {
-        this.schedule = schedule;
-        this.group = group;
-        this.dailySchedules = dailySchedules;
+    public Schedule(ScheduleEntity schedule, Group groupEntity, List<DailySchedule> dailySchedules) {
+        this.scheduleInfoEntity = schedule;
+        this.groupEntity = groupEntity;
+        this.dailyScheduleEntities = dailySchedules;
     }
 
-    public ScheduleEntity getSchedule() {
-        return schedule;
+    public ScheduleEntity getScheduleInfoEntity() {
+        return scheduleInfoEntity;
     }
 
-    public Group getGroup() {
-        return group;
+    public Group getGroupEntity() {
+        return groupEntity;
     }
 
-    public List<DailySchedule> getDailySchedules() {
-        return dailySchedules;
+    public List<DailySchedule> getDailyScheduleEntities() {
+        return dailyScheduleEntities;
     }
 }
 

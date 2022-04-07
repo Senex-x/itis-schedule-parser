@@ -6,7 +6,6 @@ import org.hibernate.SessionFactory
 import org.springframework.transaction.annotation.Transactional
 import java.io.Serializable
 
-
 @Transactional
 abstract class HibernateRepository<T, K : Serializable>(
     private val sessionFactory: SessionFactory

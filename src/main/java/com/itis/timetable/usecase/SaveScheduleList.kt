@@ -21,16 +21,16 @@ class SaveScheduleList(
         scheduleEntityRepository.deleteAll()
 
         for (schedule in schedules) {
-            val scheduleEntity = schedule.schedule
-            val group = schedule.group
-            val dailySchedules = schedule.dailySchedules
+            val scheduleEntity = schedule.scheduleInfoEntity
+            val group = schedule.groupEntity
+            val dailySchedules = schedule.dailyScheduleEntities
 
             scheduleEntityRepository.save(scheduleEntity)
             groupRepository.save(group)
 
             for (dailySchedule in dailySchedules) {
-                val dailyScheduleEntity = dailySchedule.dailyScheduleEntity
-                val subjects = dailySchedule.subjects
+                val dailyScheduleEntity = dailySchedule.dailyScheduleInfoEntity
+                val subjects = dailySchedule.subjectEntities
 
                 dailyScheduleEntityRepository.save(dailyScheduleEntity)
 
