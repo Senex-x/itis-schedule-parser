@@ -44,7 +44,7 @@ class TimetableParser {
 
                 val dailyScheduleIndexInWeek = subjectIndex / CLASSES_PER_DAY
                 val subjectIndexInDay = subjectIndex % CLASSES_PER_DAY
-                val dailyScheduleId = (groupIndex * 6 + dailyScheduleIndexInWeek).toLong()
+                val dailyScheduleId = (groupIndex * 6 + dailyScheduleIndexInWeek + 1).toLong()
 
                 if (subjectValueArray.isNotEmpty() && subjectValueArray[0].isNotBlank()) {
                     //println(subjectIndex)
