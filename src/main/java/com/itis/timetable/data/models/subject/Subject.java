@@ -15,6 +15,8 @@ public class Subject {
     private long id;
     @Column(name = "daily_schedule_id")
     private long dailyScheduleId;
+    @Column(name = "varied_subject_id")
+    private Long variedSubjectId;
     @Column(name = "number_in_day")
     private int numberInDay;
     @Column(name = "start_time")
@@ -39,9 +41,10 @@ public class Subject {
         return isOnEvenWeeks && isOnOddWeeks;
     }
 
-    public Subject(long id, long dailyScheduleId, int numberInDay, String startTime, String endTime, String name, String room, SubjectType type, Boolean isOnEvenWeeks, Boolean isOnOddWeeks, String teacherName, String teacherSurname, String teacherPatronymic) {
+    public Subject(long id, long dailyScheduleId, Long variedSubjectId, int numberInDay, String startTime, String endTime, String name, String room, SubjectType type, Boolean isOnEvenWeeks, Boolean isOnOddWeeks, String teacherName, String teacherSurname, String teacherPatronymic) {
         this.id = id;
         this.dailyScheduleId = dailyScheduleId;
+        this.variedSubjectId = variedSubjectId;
         this.numberInDay = numberInDay;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -82,6 +85,14 @@ public class Subject {
 
     public void setDailyScheduleId(long dailyScheduleId) {
         this.dailyScheduleId = dailyScheduleId;
+    }
+
+    public Long getVariedSubjectId() {
+        return variedSubjectId;
+    }
+
+    public void setVariedSubjectId(Long variedSubjectId) {
+        this.variedSubjectId = variedSubjectId;
     }
 
     public int getNumberInDay() {

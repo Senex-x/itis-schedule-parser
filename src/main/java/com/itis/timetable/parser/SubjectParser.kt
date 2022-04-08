@@ -19,7 +19,7 @@ fun parseSubject(
     //println("Subject name: $subjectName")
 
     return Subject(
-        subjectId, dailyScheduleId,
+        subjectId, dailyScheduleId, null,
         subjectIndexInDay,
         PERIODS[subjectIndexInDay].first,
         PERIODS[subjectIndexInDay].second,
