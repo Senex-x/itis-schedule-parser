@@ -1,11 +1,41 @@
 package com.itis.timetable.data.models.subject;
 
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@NoArgsConstructor
 @ToString
-class VariedSubject {
-    VariedSubjectInfo variedSubjectInfo;
-    List<Subject> subjects;
+@Entity
+@Table(name = "varied_subjects")
+public class VariedSubject {
+    @Id
+    private long id;
+    @Column(nullable = false)
+    private String type;
+
+    public VariedSubject(long id, String type) {
+        this.id = id;
+        this.type = type;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

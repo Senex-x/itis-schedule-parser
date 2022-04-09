@@ -16,7 +16,6 @@ open class SubjectRepository(
     override fun getEntityName() = Subject::class.simpleName!!
 
     @Suppress("UNCHECKED_CAST")
-
     fun getAllByDailyScheduleId(dailyScheduleId: Long) = getSession()
         .createQuery("from ${getEntityName()} where dailyScheduleId = :dailyScheduleId").apply {
             setParameter("dailyScheduleId", dailyScheduleId)
