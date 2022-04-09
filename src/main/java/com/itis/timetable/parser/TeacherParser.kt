@@ -1,8 +1,10 @@
 package com.itis.timetable.parser
 
 /**
- * Не для предметов с несколькими преподами
- * Не для физры
+ * Ищет первую точку.
+ * Принимает исходную строку.
+ * Не для предметов с несколькими преподами.
+ * Не для физры.
  */
 fun parseProfessorInfo(value: String): ProfessorInfo {
     val firstIndexOfDot = value.indexOf('.')

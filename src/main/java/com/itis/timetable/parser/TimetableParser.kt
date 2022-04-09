@@ -19,7 +19,7 @@ class TimetableParser {
     fun parse(): List<Schedule> {
         println("############## PARSING IN PROCESS ##############")
 
-        val groupsRange = "C3:3"
+        val groupsRange =  "C3:P3" // "C3:3"
         val groupValues = access.execute(groupsRange)[0]
         val groupsCount = groupValues.filter { cell -> cell.indexOf('-') != -1 }.size
 
@@ -48,14 +48,30 @@ class TimetableParser {
 
                 if (subjectValueArray.isNotEmpty() && subjectValueArray[0].isNotBlank()) {
                     //println(subjectIndex)
-                    val subjectValue = subjectValueArray[0].replace("\n", "")
-                    val subject = parseSubject(
-                        subjectId++,
-                        dailyScheduleId,
-                        subjectIndexInDay,
-                        subjectValue,
-                    )
-                    dailySubjects.add(subject)
+                    val subjectValue = subjectValueArray[0].replace("\n", " ")
+                    if (subjectValue.startsWith(VARIED_SUBJECTS_PREFIX)
+                        || subjectValue.startsWith(VARIED_SUBJECT_PREFIX)
+                    ) {
+                        val variedSubjectsParsed = parseVariedSubject(
+                            subjectId++,
+                            dailyScheduleId,
+                            subjectIndexInDay,
+                            subjectValue.substring(VARIED_SUBJECTS_PREFIX.length),
+                        )
+
+                        val info = variedSubjectsParsed.variedSubject
+
+                        dailySubjects.addAll(variedSubjectsParsed.subjects)
+                    } else {
+                        val subject = parseSubject(
+                            subjectId++,
+                            dailyScheduleId,
+                            subjectIndexInDay,
+                            subjectValue,
+                        )
+
+                        dailySubjects.add(subject)
+                    }
                     //println("Subject: $subject")
                 }
 
@@ -113,5 +129,7 @@ class TimetableParser {
         private const val RIGHT_END = "BA"
         private const val BOTTOM_END = "45"
         private const val CLASSES_PER_DAY = 7
+        private const val VARIED_SUBJECTS_PREFIX = "Дисциплины по выбору:"
+        private const val VARIED_SUBJECT_PREFIX = "Дисциплина по выбору:"
     }
 }
