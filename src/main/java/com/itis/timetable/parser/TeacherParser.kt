@@ -26,6 +26,22 @@ fun parseProfessorInfo(value: String): ProfessorInfo {
     )
 }
 
+/**
+ * Принимает строку, содержащую только имя преподавателя в формате "Фамилия А.Б.".
+ */
+fun getProfessorInfo(string: String): ProfessorInfo {
+    val surname = Regex("[а-яА-Я]+ ").find(string)?.value?.trimEnd()!!
+    val name = Regex(" [А-Я]\\.").find(string)?.value?.trimStart()!!
+    val patronymic = Regex(" [А-Я]\\.[А-Я]\\.").find(string)?.value?.substring(3)!!
+
+    return ProfessorInfo(
+        surname,
+        name,
+        patronymic,
+        0, string.length
+    )
+}
+
 private fun emptyProfessorInfo(value: String) = ProfessorInfo(
     "",
     "",
