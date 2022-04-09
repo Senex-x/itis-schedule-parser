@@ -18,8 +18,28 @@ fun parseVariedSubject(
 
     println("Origin: $subjectValue")
 
+    val list = mutableListOf<Subject>()
+    val listVaried = mutableListOf<VariedSubject>()
 
-    find(1, 1, 1, 1, "8:30", "10:00", subjectValue, 0)
+    var startIndex = 0
+
+    do {
+        val subjectParsed = findOneVariedSubjectWithVariants(
+            1, 1, 1,
+            1, "8:30", "10:00",
+            subjectValue,
+            startIndex
+        )
+        subjectParsed?.let {
+            listVaried.add(it.variedSubject)
+            list.addAll(it.subjects)
+            startIndex += it.endIndex
+            //println(subjectValue.substring(startIndex))
+        }
+    } while (subjectParsed != null)
+
+    println(listVaried)
+    println(list)
 
 
     return VariedSubjectParsed(
@@ -39,38 +59,42 @@ private val ROOM_REGEX = Regex(" [0-9]{3,4}")
  * Принимает строку без префикса о курсах по выбору.
  * Ищет первый предмет по выбору и все его вариации.
  */
-fun find(
+fun findOneVariedSubjectWithVariants(
     variedSubjectId: Long,
     subjectId: Long,
     dailyScheduleId: Long,
     numberInDay: Int,
     startTime: String,
     endTime: String,
-    string: String,
+    originalString: String,
     startIndex: Int
-): VariedSubjectParsed { // "Введение в искусственный интеллект - Таланов М.О.(в ms teams). в 1311, Григорян К.А. гр.1 в н.н., гр.2 в ч.н. в 1306.,"
+): VariedSubjectParsed? { // ",  Введение в искусственный интеллект - Таланов М.О.(в ms teams). в 1311, Григорян К.А. гр.1 в н.н., гр.2 в ч.н. в 1306.,"
     val subjects = mutableListOf<Subject>()
 
-    val roomResult = ROOM_REGEX.find(string)!!
-    val room = roomResult.value
+    val string = originalString.substring(startIndex)
+
+    val roomResult = findRoom(string) ?: return null
+    val room = roomResult.value.trimStart()
     val roomStartIndex = roomResult.range.first
     val subjectWithName = string.substring(
-        startIndex,
+        0,
         roomStartIndex
-    ) // "Введение в искусственный интеллект - Таланов М.О.(в ms teams). в"
+    ) // ",  Введение в искусственный интеллект - Таланов М.О.(в ms teams). в"
 
-    val nameResult = NAME_REGEX.find(subjectWithName)!!
+    val nameResult = findName(string) ?: return null
     val teacherName = nameResult.value
     val nameStartIndex = nameResult.range.first
-    val subjectNameWithEmptyEnd =
-        subjectWithName.substring(startIndex, nameStartIndex) // "Введение в искусственный интеллект -"
-
+    val subjectNameWithEmptyStartAndEnd =
+        subjectWithName.substring(0, nameStartIndex) // ",  Введение в искусственный интеллект -"
     val emptyEndRegex = Regex("[а-я][^а-яА-Я]*$")
     val emptyEndStart =
-        emptyEndRegex.find(subjectNameWithEmptyEnd)?.range?.start?.plus(1) ?: subjectNameWithEmptyEnd.length
+        emptyEndRegex.find(subjectNameWithEmptyStartAndEnd)?.range?.start?.plus(1) ?: subjectNameWithEmptyStartAndEnd.length
+    val subjectNameWithEmptyStart = subjectNameWithEmptyStartAndEnd.substring(0, emptyEndStart) // ",  Введение в искусственный интеллект"
+    val emptyStartRegex = Regex("[^а-яА-Я]*[а-яА-Я]")
 
-    val subjectName = subjectNameWithEmptyEnd.substring(0, emptyEndStart)
-    //println(subjectName) // "Введение в искусственный интеллект"
+    //println(emptyStartRegex.find(subjectNameWithEmptyStart)?.value)
+    val emptyStartEndIndex = emptyStartRegex.find(subjectNameWithEmptyStart)?.range?.last ?: 0
+    val subjectName = subjectNameWithEmptyStart.substring(emptyStartEndIndex)
 
     val variedSubject = VariedSubject(
         variedSubjectId,
@@ -79,33 +103,61 @@ fun find(
 
     val professorInfo = parseProfessorInfo(teacherName)
 
-    subjects.add( // Base subject
-        Subject(
-            subjectId,
-            dailyScheduleId,
-            variedSubjectId,
-            numberInDay,
-            startTime, endTime,
-            subjectName,
-            room,
-            if (room.length == 4) SubjectType.SEMINAR else SubjectType.LECTURE,
-            true, true,
-            professorInfo.name, professorInfo.surname, professorInfo.patronymic
-        )
+    val baseSubject = Subject(
+        subjectId,
+        dailyScheduleId,
+        variedSubjectId,
+        numberInDay,
+        startTime, endTime,
+        subjectName,
+        room,
+        if (room.length == 4) SubjectType.SEMINAR else SubjectType.LECTURE,
+        true, true,
+        professorInfo.name, professorInfo.surname, professorInfo.patronymic
+    )
+    subjects.add(
+        baseSubject
     )
 
     val roomEndIndex = roomResult.range.last + 1
 
-    findPartialSubjects(string.substring(roomEndIndex))
+    val partialSubjectsParsed = findPartialSubjects(string.substring(roomEndIndex))
+    val partialSubjects = partialSubjectsParsed.partialSubjects
+    val subjectsFromPartial = convertPartialSubjects(partialSubjects, baseSubject)
 
-    val variedSubjectParsed = VariedSubjectParsed(
+    subjects.addAll(subjectsFromPartial)
+
+    //println("S: $subjects")
+    //println(string.substring(roomEndIndex + partialSubjectsParsed.endIndex + 1))
+
+    return VariedSubjectParsed(
         variedSubject,
         subjects,
-        -1
+        roomEndIndex + partialSubjectsParsed.endIndex + 1 // Конец этого предмета по выбору и его вариаций
     )
-
-    return variedSubjectParsed
 }
+
+private fun convertPartialSubjects(partialSubjects: List<PartialSubject>, baseSubject: Subject) =
+    buildList {
+        for ((i, partialSubject) in partialSubjects.withIndex()) {
+            with(baseSubject) {
+                add(
+                    Subject(
+                        id + i + 1, dailyScheduleId, variedSubjectId,
+                        numberInDay,
+                        startTime, endTime,
+                        name,
+                        partialSubject.room,
+                        getTypeFromRoom(partialSubject.room),
+                        onEvenWeeks, onOddWeeks,
+                        partialSubject.professorInfo.name,
+                        partialSubject.professorInfo.surname,
+                        partialSubject.professorInfo.patronymic,
+                    )
+                )
+            }
+        }
+    }
 
 /**
  * Ищет первое имя формата " Фамилия А.Б."
@@ -121,13 +173,15 @@ fun findRoom(string: String) = ROOM_REGEX.find(string)
 
 fun findRoomString(string: String) = findRoom(string)?.value?.trimStart()
 
+fun getTypeFromRoom(room: String) = if (room.trim().length == 4) SubjectType.SEMINAR else SubjectType.LECTURE
+
 /**
  * Ищет первые частичные предметы после курса по выбору и до следующего.
  */
-private fun findPartialSubjects(string: String): List<PartialSubject> {
+private fun findPartialSubjects(string: String): PartialSubjectsParsed {
     val partialSubjects = mutableListOf<PartialSubject>()
 
-    println(string)
+    //println(string)
 
     var startIndex = 0
 
@@ -139,10 +193,18 @@ private fun findPartialSubjects(string: String): List<PartialSubject> {
         }
     } while (partialSubject != null)
 
-    println(partialSubjects)
+    //println(partialSubjects)
 
-    return partialSubjects
+    return PartialSubjectsParsed(
+        partialSubjects,
+        startIndex
+    )
 }
+
+private data class PartialSubjectsParsed(
+    val partialSubjects: List<PartialSubject>,
+    val endIndex: Int,
+)
 
 private val GROUP_REGEX = Regex("гр\\. ?[1234]")
 
@@ -158,7 +220,7 @@ private fun findPartialSubject(string: String): PartialSubject? {
     val nameResult = findName(string) ?: return null
     val professorInfo = getProfessorInfo(nameResult.value)
 
-    if(nameResult.range.first > 5) return null // Если есть название предмета перед именем препода
+    if (nameResult.range.first > 5) return null // Если есть название предмета перед именем препода
 
     //println(nameResult.value)
 
