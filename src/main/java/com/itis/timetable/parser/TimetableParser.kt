@@ -1,6 +1,5 @@
 package com.itis.timetable.parser
 
-import com.itis.timetable.data.models.TimetableData
 import com.itis.timetable.data.models.group.Group
 import com.itis.timetable.data.models.schedule.DailySchedule
 import com.itis.timetable.data.models.schedule.DailyScheduleEntity
@@ -20,7 +19,7 @@ class TimetableParser {
     @Autowired
     private lateinit var access: AccessService
 
-    fun parse(): TimetableData {
+    fun parse(): List<Schedule> {
         println("############## PARSING IN PROCESS ##############")
 
         val groupsRange = "P3:P3" // "C3:3"
@@ -28,7 +27,6 @@ class TimetableParser {
         val groupsCount = groupValues.filter { cell -> cell.indexOf('-') != -1 }.size
 
         val schedules = mutableListOf<Schedule>()
-        val variedSubjects = mutableListOf<VariedSubject>()
         var subjectId = 1L
         var variedSubjectId = 1L
 
@@ -45,6 +43,7 @@ class TimetableParser {
 
             val dailySchedules = mutableListOf<DailySchedule>()
             var dailySubjects = mutableListOf<Subject>()
+            var variedSubjects = mutableListOf<VariedSubject>()
 
             for ((subjectIndex, subjectValueArray) in weekValues.withIndex()) {
 
@@ -59,7 +58,7 @@ class TimetableParser {
                     val variedSubjectResult = findVariedSubject(subjectValue)
                     if (variedSubjectResult != null) { // ---------------- Курс по выбору
                         variedSubjects.add(
-                            VariedSubject(variedSubjectId)
+                            VariedSubject(variedSubjectId, dailyScheduleId)
                         )
 
                         val variedSubjectsParsed = parseVariedSubject(
@@ -98,9 +97,11 @@ class TimetableParser {
                             DayOfWeek.of(dailyScheduleIndexInWeek + 1).toString(),
                             dailyScheduleIndexInWeek,
                         ),
-                        dailySubjects
+                        variedSubjects,
+                        dailySubjects,
                     )
                     dailySubjects = mutableListOf()
+                    variedSubjects = mutableListOf()
 
 
                     dailySchedules.add(dailySchedule)
@@ -134,10 +135,7 @@ class TimetableParser {
         }
 
         println("############## PARSING DONE ##############")
-        return TimetableData(
-            schedules,
-            variedSubjects
-        )
+        return schedules
     }
 
     private fun findVariedSubject(string: String) = VARIED_SUBJECT_REGEX.find(string)

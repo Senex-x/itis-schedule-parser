@@ -13,6 +13,7 @@ class GetScheduleByGroup(
     private val scheduleEntityRepository: ScheduleEntityRepository,
     private val dailyScheduleEntityRepository: DailyScheduleEntityRepository,
     private val subjectRepository: SubjectRepository,
+    private val getAllVariedSubjectsByDailyScheduleId: GetAllVariedSubjectsByDailyScheduleId,
 ) {
     operator fun invoke(group: Group): Schedule {
         val scheduleEntity = scheduleEntityRepository.getByGroupId(group.id)
@@ -22,11 +23,13 @@ class GetScheduleByGroup(
 
         for (dailyScheduleEntity in dailyScheduleEntities) {
             val subjects = subjectRepository.getAllByDailyScheduleId(dailyScheduleEntity.id)
+            val variedSubjects = getAllVariedSubjectsByDailyScheduleId(dailyScheduleEntity.id)
 
             dailySchedules.add(
                 DailySchedule(
                     dailyScheduleEntity,
-                    subjects
+                    variedSubjects,
+                    subjects,
                 )
             )
         }
