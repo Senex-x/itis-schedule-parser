@@ -19,7 +19,7 @@ class TimetableParser {
     fun parse(): List<Schedule> {
         println("############## PARSING IN PROCESS ##############")
 
-        val groupsRange =  "C3:P3" // "C3:3"
+        val groupsRange = "C3:P3" // "C3:3"
         val groupValues = access.execute(groupsRange)[0]
         val groupsCount = groupValues.filter { cell -> cell.indexOf('-') != -1 }.size
 
@@ -49,20 +49,22 @@ class TimetableParser {
                 if (subjectValueArray.isNotEmpty() && subjectValueArray[0].isNotBlank()) {
                     //println(subjectIndex)
                     val subjectValue = subjectValueArray[0].replace("\n", " ")
-                    if (subjectValue.startsWith(VARIED_SUBJECTS_PREFIX)
-                        || subjectValue.startsWith(VARIED_SUBJECT_PREFIX)
-                    ) {
+
+                    val variedSubjectResult = findVariedSubject(subjectValue)
+                    if (variedSubjectResult != null) { // Курс по выбору
                         val variedSubjectsParsed = parseVariedSubject(
                             subjectId++,
                             dailyScheduleId,
                             subjectIndexInDay,
-                            subjectValue.substring(VARIED_SUBJECTS_PREFIX.length),
+                            subjectValue.substring(variedSubjectResult.range.last + 1),
                         )
 
                         val info = variedSubjectsParsed.variedSubject
 
+
+
                         dailySubjects.addAll(variedSubjectsParsed.subjects)
-                    } else {
+                    } else { // Обычный предмет
                         val subject = parseSubject(
                             subjectId++,
                             dailyScheduleId,
@@ -122,6 +124,8 @@ class TimetableParser {
         return schedules
     }
 
+    private fun findVariedSubject(string: String) = VARIED_SUBJECT_REGEX.find(string)
+
     companion object {
         private const val SHEET_NAME = "'расписание занятий 2 с 2021-2022'"
         private const val LEFT_START = "C"
@@ -129,7 +133,6 @@ class TimetableParser {
         private const val RIGHT_END = "BA"
         private const val BOTTOM_END = "45"
         private const val CLASSES_PER_DAY = 7
-        private const val VARIED_SUBJECTS_PREFIX = "Дисциплины по выбору:"
-        private const val VARIED_SUBJECT_PREFIX = "Дисциплина по выбору:"
+        private val VARIED_SUBJECT_REGEX = Regex("Дисциплин[аы] по выбору:?")
     }
 }
