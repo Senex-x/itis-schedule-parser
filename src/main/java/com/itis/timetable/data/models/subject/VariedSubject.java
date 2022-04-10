@@ -16,11 +16,11 @@ public class VariedSubject {
     @Id
     private long id;
     @Column(nullable = false)
-    private String type;
+    private String name;
 
-    public VariedSubject(long id, String type) {
+    public VariedSubject(long id, String name) {
         this.id = id;
-        this.type = type;
+        this.name = name;
     }
 
     public long getId() {
@@ -31,11 +31,11 @@ public class VariedSubject {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setName(String type) {
+        this.name = type;
     }
 }

@@ -31,7 +31,7 @@ fun parseSubject(
     )
 }
 
-private val PERIODS = listOf(
+val PERIODS = listOf(
     "08:30" to "10:00",
     "10:10" to "11:40",
     "11:50" to "13:20",

@@ -32,8 +32,13 @@ fun parseProfessorInfo(value: String): ProfessorInfo {
 fun getProfessorInfo(string: String): ProfessorInfo? {
     val surname = Regex("[А-Я][а-я]+ ").find(string)?.value?.trimEnd() ?: return null
     val name = Regex(" [А-Я]\\.").find(string)?.value?.trimStart() ?: return null
-    val patronymicResult = Regex(" [А-Я]\\.([А-Я]\\.)?").find(string) ?: return null
-    val patronymic = patronymicResult.value.substring(3)
+    val patronymicResult = Regex(" [А-Я]\\.([А-Я]\\.?)?").find(string) ?: return null
+    val patronymicWithOptionalDot = patronymicResult.value.substring(3)
+    val patronymic = when (patronymicWithOptionalDot.length) {
+        2 -> patronymicWithOptionalDot
+        1 -> "$patronymicWithOptionalDot."
+        else -> ""
+    }
 
     return ProfessorInfo(
         surname,

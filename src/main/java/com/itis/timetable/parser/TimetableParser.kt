@@ -6,7 +6,10 @@ import com.itis.timetable.data.models.schedule.DailyScheduleEntity
 import com.itis.timetable.data.models.schedule.Schedule
 import com.itis.timetable.data.models.schedule.ScheduleEntity
 import com.itis.timetable.data.models.subject.Subject
+import com.itis.timetable.data.models.subject.VariedSubject
 import com.itis.timetable.parser.util.AccessService
+import com.itis.timetable.parser.util.getCourseNumber
+import com.itis.timetable.parser.util.toColumnName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.DayOfWeek
@@ -16,21 +19,23 @@ class TimetableParser {
     @Autowired
     private lateinit var access: AccessService
 
-    fun parse(): List<Schedule> {
+    fun parse(): ParserResult {
         println("############## PARSING IN PROCESS ##############")
 
-        val groupsRange = "C3:P3" // "C3:3"
+        val groupsRange = "P3:P3" // "C3:3"
         val groupValues = access.execute(groupsRange)[0]
         val groupsCount = groupValues.filter { cell -> cell.indexOf('-') != -1 }.size
 
         val schedules = mutableListOf<Schedule>()
+        val variedSubjects = mutableListOf<VariedSubject>()
         var subjectId = 1L
+        var variedSubjectId = 1L
 
         for (groupIndex in 0 until groupsCount) {
             if (groupIndex % 2 == 0 || groupIndex == groupsCount - 1)
                 println("# ${(((groupIndex + 1) / groupsCount.toFloat()) * 100).toInt()}% #")
             //println("Group ========================================= $groupIndex")
-            val groupColumnName = (3 + groupIndex).toColumnName()
+            val groupColumnName = (LEFT_START_NUMERIC + groupIndex + 13).toColumnName()
             val scheduleId = groupIndex + 1L
 
             val weekRange =
@@ -51,20 +56,27 @@ class TimetableParser {
                     val subjectValue = subjectValueArray[0].replace("\n", " ")
 
                     val variedSubjectResult = findVariedSubject(subjectValue)
-                    if (variedSubjectResult != null) { // Курс по выбору
-                        val variedSubjectsParsed = parseVariedSubject(
-                            subjectId++,
-                            dailyScheduleId,
-                            subjectIndexInDay,
-                            subjectValue.substring(variedSubjectResult.range.last + 1),
+                    if (variedSubjectResult != null) { // ---------------- Курс по выбору
+                        variedSubjects.add(
+                            VariedSubject(variedSubjectId, "Курсы по выбору")
                         )
 
-                        val info = variedSubjectsParsed.variedSubject
+                        val variedSubjectsParsed = parseVariedSubject(
+                            subjectValue.substring(variedSubjectResult.range.last + 1),
+                            variedSubjectId,
+                            subjectId,
+                            dailyScheduleId,
+                            subjectIndexInDay + 1,
+                            PERIODS[subjectIndexInDay].first,
+                            PERIODS[subjectIndexInDay].second,
+                        )
 
+                        //for(i in variedSubjectsParsed) println(i)
 
-
-                        dailySubjects.addAll(variedSubjectsParsed.subjects)
-                    } else { // Обычный предмет
+                        dailySubjects.addAll(variedSubjectsParsed)
+                        subjectId += variedSubjectsParsed.size
+                        variedSubjectId++
+                    } else { // ------------------------------------------  Обычный предмет
                         val subject = parseSubject(
                             subjectId++,
                             dailyScheduleId,
@@ -74,7 +86,7 @@ class TimetableParser {
 
                         dailySubjects.add(subject)
                     }
-                    //println("Subject: $subject")
+                    println("Daily subjects: $dailySubjects")
                 }
 
                 if (subjectIndexInDay == CLASSES_PER_DAY - 1 || subjectIndex == weekValues.size - 1) {
@@ -121,18 +133,22 @@ class TimetableParser {
         }
 
         println("############## PARSING DONE ##############")
-        return schedules
+        return ParserResult(
+            schedules,
+            variedSubjects
+        )
     }
 
     private fun findVariedSubject(string: String) = VARIED_SUBJECT_REGEX.find(string)
 
     companion object {
         private const val SHEET_NAME = "'расписание занятий 2 с 2021-2022'"
+        private const val LEFT_START_NUMERIC = 3
         private const val LEFT_START = "C"
         private const val TOP_START = "3"
         private const val RIGHT_END = "BA"
         private const val BOTTOM_END = "45"
         private const val CLASSES_PER_DAY = 7
-        private val VARIED_SUBJECT_REGEX = Regex("Дисциплин[аы] по выбору:?")
+        private val VARIED_SUBJECT_REGEX = Regex(" *[Дд]исциплин[аы] +по +выбору:? +")
     }
 }
