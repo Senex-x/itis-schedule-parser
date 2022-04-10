@@ -1,5 +1,6 @@
 package com.itis.timetable.parser
 
+import com.itis.timetable.data.models.TimetableData
 import com.itis.timetable.data.models.group.Group
 import com.itis.timetable.data.models.schedule.DailySchedule
 import com.itis.timetable.data.models.schedule.DailyScheduleEntity
@@ -19,7 +20,7 @@ class TimetableParser {
     @Autowired
     private lateinit var access: AccessService
 
-    fun parse(): ParserResult {
+    fun parse(): TimetableData {
         println("############## PARSING IN PROCESS ##############")
 
         val groupsRange = "P3:P3" // "C3:3"
@@ -58,7 +59,7 @@ class TimetableParser {
                     val variedSubjectResult = findVariedSubject(subjectValue)
                     if (variedSubjectResult != null) { // ---------------- Курс по выбору
                         variedSubjects.add(
-                            VariedSubject(variedSubjectId, "Курсы по выбору")
+                            VariedSubject(variedSubjectId)
                         )
 
                         val variedSubjectsParsed = parseVariedSubject(
@@ -133,7 +134,7 @@ class TimetableParser {
         }
 
         println("############## PARSING DONE ##############")
-        return ParserResult(
+        return TimetableData(
             schedules,
             variedSubjects
         )
