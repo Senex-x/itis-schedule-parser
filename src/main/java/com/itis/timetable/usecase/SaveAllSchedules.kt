@@ -8,18 +8,13 @@ import com.itis.timetable.data.repositories.SubjectRepository
 import org.springframework.stereotype.Component
 
 @Component
-class SaveScheduleList(
+class SaveAllSchedules(
     private val subjectRepository: SubjectRepository,
     private val dailyScheduleEntityRepository: DailyScheduleEntityRepository,
     private val groupRepository: GroupRepository,
     private val scheduleEntityRepository: ScheduleEntityRepository,
 ) {
     operator fun invoke(schedules: List<Schedule>) {
-        subjectRepository.deleteAll()
-        dailyScheduleEntityRepository.deleteAll()
-        groupRepository.deleteAll()
-        scheduleEntityRepository.deleteAll()
-
         for (schedule in schedules) {
             val scheduleEntity = schedule.scheduleInfoEntity
             val group = schedule.groupEntity
@@ -34,8 +29,8 @@ class SaveScheduleList(
 
                 dailyScheduleEntityRepository.save(dailyScheduleEntity)
 
-                for (subject in subjects) {
-                    subjectRepository.save(subject)
+                subjects.forEach {
+                    subjectRepository.save(it)
                 }
             }
         }

@@ -1,6 +1,5 @@
 package com.itis.timetable.data.repositories
 
-import com.itis.timetable.data.models.schedule.DailySchedule
 import com.itis.timetable.data.models.subject.Subject
 import org.hibernate.SessionFactory
 import org.springframework.stereotype.Repository

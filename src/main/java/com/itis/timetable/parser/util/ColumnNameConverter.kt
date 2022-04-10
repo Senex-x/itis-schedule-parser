@@ -1,4 +1,4 @@
-package com.itis.timetable.parser
+package com.itis.timetable.parser.util
 
 internal fun Int.toColumnName(): String {
     var n = this

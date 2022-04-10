@@ -1,4 +1,4 @@
-package com.itis.timetable.parser
+package com.itis.timetable.parser.util
 
 fun getCourseNumber(groupIndex: Int, groupValues: List<String>): Int {
     var prefix = ""
