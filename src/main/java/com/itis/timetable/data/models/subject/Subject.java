@@ -25,8 +25,8 @@ public class Subject {
     private String endTime;
     private String name;
     private String room;
-    private SubjectType type;
-    private SubjectKind kind;
+    private Type type;
+    private Kind kind;
     @Column(name = "is_on_even_weeks")
     private Boolean isOnEvenWeeks;
     @Column(name = "is_on_odd_weeks")
@@ -38,11 +38,7 @@ public class Subject {
     @Column(name = "teacher_patronymic")
     private String teacherPatronymic;
 
-    private Boolean isOnEveryWeek() {
-        return isOnEvenWeeks && isOnOddWeeks;
-    }
-
-    public Subject(long id, long dailyScheduleId, Long variedSubjectId, int numberInDay, String startTime, String endTime, String name, String room, SubjectType type, SubjectKind kind, Boolean isOnEvenWeeks, Boolean isOnOddWeeks, String teacherName, String teacherSurname, String teacherPatronymic) {
+    public Subject(long id, long dailyScheduleId, Long variedSubjectId, int numberInDay, String startTime, String endTime, String name, String room, Type type, Kind kind, Boolean isOnEvenWeeks, Boolean isOnOddWeeks, String teacherName, String teacherSurname, String teacherPatronymic) {
         this.id = id;
         this.dailyScheduleId = dailyScheduleId;
         this.variedSubjectId = variedSubjectId;
@@ -137,19 +133,19 @@ public class Subject {
         this.room = room;
     }
 
-    public SubjectType getType() {
+    public Type getType() {
         return type;
     }
 
-    public void setType(SubjectType type) {
+    public void setType(Type type) {
         this.type = type;
     }
 
-    public SubjectKind getKind() {
+    public Kind getKind() {
         return kind;
     }
 
-    public void setKind(SubjectKind kind) {
+    public void setKind(Kind kind) {
         this.kind = kind;
     }
 
@@ -191,5 +187,17 @@ public class Subject {
 
     public void setTeacherPatronymic(String teacherPatronymic) {
         this.teacherPatronymic = teacherPatronymic;
+    }
+
+    public enum Type {
+        LECTURE,
+        SEMINAR,
+    }
+
+    public enum Kind {
+        ORDINARY,
+        PHYSICAL,
+        ELECTIVE,
+        BLOCK,
     }
 }

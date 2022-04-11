@@ -1,8 +1,6 @@
 package com.itis.timetable.parser
 
 import com.itis.timetable.data.models.subject.Subject
-import com.itis.timetable.data.models.subject.SubjectKind
-import com.itis.timetable.data.models.subject.SubjectType
 
 /**
  * Принимает строку после префикса о курсах по выбору.
@@ -147,7 +145,7 @@ fun findVariedSubjectWithVariants(
         subjectName,
         room,
         getSubjectTypeFromRoom(room),
-        SubjectKind.ELECTIVE,
+        Subject.Kind.ELECTIVE,
         true, true,
         professorInfo.name, professorInfo.surname, professorInfo.patronymic
     )
@@ -166,7 +164,7 @@ fun findVariedSubjectWithVariants(
                 subjectName,
                 if (i == additionalTeachers.size - 1) lastAdditionalTeacherRoom else "",
                 getSubjectTypeFromRoom(room),
-                SubjectKind.ELECTIVE,
+                Subject.Kind.ELECTIVE,
                 true, true,
                 additionalTeacher.name, additionalTeacher.surname, additionalTeacher.patronymic
             )
@@ -220,7 +218,7 @@ private fun convertPartialSubjects(
                     name,
                     partialSubject.room,
                     getSubjectTypeFromRoom(partialSubject.room),
-                    SubjectKind.ELECTIVE,
+                    Subject.Kind.ELECTIVE,
                     onEvenWeeks, onOddWeeks,
                     partialSubject.professorInfo.name,
                     partialSubject.professorInfo.surname,
@@ -243,9 +241,8 @@ fun findName(string: String) = NAME_REGEX.find(string)
  */
 fun findRoom(string: String) = ROOM_REGEX.find(string)
 
-fun findRoomString(string: String) = findRoom(string)?.value?.trimStart()
-
-fun getSubjectTypeFromRoom(room: String) = if (room.trim().length == 4) SubjectType.SEMINAR else SubjectType.LECTURE
+fun getSubjectTypeFromRoom(room: String) = if (room.trim().length == 4)
+    Subject.Type.SEMINAR else Subject.Type.LECTURE
 
 /**
  * Ищет первые частичные предметы после курса по выбору и до следующего.
