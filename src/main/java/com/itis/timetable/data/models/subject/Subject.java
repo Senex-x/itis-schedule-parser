@@ -26,6 +26,7 @@ public class Subject {
     private String name;
     private String room;
     private SubjectType type;
+    private SubjectKind kind;
     @Column(name = "is_on_even_weeks")
     private Boolean isOnEvenWeeks;
     @Column(name = "is_on_odd_weeks")
@@ -41,7 +42,7 @@ public class Subject {
         return isOnEvenWeeks && isOnOddWeeks;
     }
 
-    public Subject(long id, long dailyScheduleId, Long variedSubjectId, int numberInDay, String startTime, String endTime, String name, String room, SubjectType type, Boolean isOnEvenWeeks, Boolean isOnOddWeeks, String teacherName, String teacherSurname, String teacherPatronymic) {
+    public Subject(long id, long dailyScheduleId, Long variedSubjectId, int numberInDay, String startTime, String endTime, String name, String room, SubjectType type, SubjectKind kind, Boolean isOnEvenWeeks, Boolean isOnOddWeeks, String teacherName, String teacherSurname, String teacherPatronymic) {
         this.id = id;
         this.dailyScheduleId = dailyScheduleId;
         this.variedSubjectId = variedSubjectId;
@@ -51,6 +52,7 @@ public class Subject {
         this.name = name;
         this.room = room;
         this.type = type;
+        this.kind = kind;
         this.isOnEvenWeeks = isOnEvenWeeks;
         this.isOnOddWeeks = isOnOddWeeks;
         this.teacherName = teacherName;
@@ -141,6 +143,14 @@ public class Subject {
 
     public void setType(SubjectType type) {
         this.type = type;
+    }
+
+    public SubjectKind getKind() {
+        return kind;
+    }
+
+    public void setKind(SubjectKind kind) {
+        this.kind = kind;
     }
 
     public Boolean getOnEvenWeeks() {

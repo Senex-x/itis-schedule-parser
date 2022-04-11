@@ -1,6 +1,7 @@
 package com.itis.timetable.parser
 
 import com.itis.timetable.data.models.subject.Subject
+import com.itis.timetable.data.models.subject.SubjectKind
 import com.itis.timetable.data.models.subject.SubjectType
 
 /**
@@ -146,6 +147,7 @@ fun findVariedSubjectWithVariants(
         subjectName,
         room,
         getSubjectTypeFromRoom(room),
+        SubjectKind.ELECTIVE,
         true, true,
         professorInfo.name, professorInfo.surname, professorInfo.patronymic
     )
@@ -164,6 +166,7 @@ fun findVariedSubjectWithVariants(
                 subjectName,
                 if (i == additionalTeachers.size - 1) lastAdditionalTeacherRoom else "",
                 getSubjectTypeFromRoom(room),
+                SubjectKind.ELECTIVE,
                 true, true,
                 additionalTeacher.name, additionalTeacher.surname, additionalTeacher.patronymic
             )
@@ -217,6 +220,7 @@ private fun convertPartialSubjects(
                     name,
                     partialSubject.room,
                     getSubjectTypeFromRoom(partialSubject.room),
+                    SubjectKind.ELECTIVE,
                     onEvenWeeks, onOddWeeks,
                     partialSubject.professorInfo.name,
                     partialSubject.professorInfo.surname,

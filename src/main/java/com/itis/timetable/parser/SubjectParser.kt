@@ -1,8 +1,12 @@
 package com.itis.timetable.parser
 
 import com.itis.timetable.data.models.subject.Subject
+import com.itis.timetable.data.models.subject.SubjectKind
 import com.itis.timetable.data.models.subject.SubjectType
 
+/**
+ * Парсит обычный предмет
+ */
 fun parseSubject(
     subjectId: Long,
     dailyScheduleId: Long,
@@ -26,6 +30,7 @@ fun parseSubject(
         subjectName,
         room,
         if (room.length == 4) SubjectType.SEMINAR else SubjectType.LECTURE,
+        SubjectKind.ORDINARY,
         true, true,
         prof.name, prof.surname, prof.patronymic,
     )
