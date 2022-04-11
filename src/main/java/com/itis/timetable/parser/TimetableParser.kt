@@ -55,13 +55,13 @@ class TimetableParser {
                     //println(subjectIndex)
                     val subjectValue = subjectValueArray[0].replace("\n", " ")
 
-                    val variedSubjectResult = findVariedSubject(subjectValue)
-                    if (variedSubjectResult != null) { // ---------------- Курс по выбору
+                    val variedSubjectResult = findVariedSubjectPrefix(subjectValue)
+                    if (variedSubjectResult != null) { // ----------------------------------- Курс по выбору
                         variedSubjects.add(
                             VariedSubject(variedSubjectId, dailyScheduleId)
                         )
 
-                        val variedSubjectsParsed = parseVariedSubject(
+                        val variedSubjectParsed = parseVariedSubject(
                             subjectValue.substring(variedSubjectResult.range.last + 1),
                             variedSubjectId,
                             subjectId,
@@ -73,10 +73,10 @@ class TimetableParser {
 
                         //for(i in variedSubjectsParsed) println(i)
 
-                        dailySubjects.addAll(variedSubjectsParsed)
-                        subjectId += variedSubjectsParsed.size
+                        dailySubjects.addAll(variedSubjectParsed)
+                        subjectId += variedSubjectParsed.size
                         variedSubjectId++
-                    } else { // ------------------------------------------  Обычный предмет
+                    } else { // ------------------------------------------------------------  Обычный предмет
                         val subject = parseSubject(
                             subjectId++,
                             dailyScheduleId,
@@ -138,7 +138,7 @@ class TimetableParser {
         return schedules
     }
 
-    private fun findVariedSubject(string: String) = VARIED_SUBJECT_REGEX.find(string)
+    private fun findVariedSubjectPrefix(string: String) = VARIED_SUBJECT_PREFIX_REGEX.find(string)
 
     companion object {
         private const val SHEET_NAME = "'расписание занятий 2 с 2021-2022'"
@@ -148,6 +148,6 @@ class TimetableParser {
         private const val RIGHT_END = "BA"
         private const val BOTTOM_END = "45"
         private const val CLASSES_PER_DAY = 7
-        private val VARIED_SUBJECT_REGEX = Regex(" *[Дд]исциплин[аы] +по +выбору:? +")
+        private val VARIED_SUBJECT_PREFIX_REGEX = Regex(" *[Дд]исциплин[аы] +по +выбору:?[ .,]*")
     }
 }

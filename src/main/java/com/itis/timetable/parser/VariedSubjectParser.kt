@@ -4,45 +4,10 @@ import com.itis.timetable.data.models.subject.Subject
 
 /**
  * Принимает строку после префикса о курсах по выбору.
- * Ищет предмет по выбору
+ * Ищет все базовые предметы по выбору и все их вариации.
  */
 fun parseVariedSubject(
-    originalSubjectValue: String,
-    variedSubjectId: Long,
-    firstSubjectId: Long,
-    dailyScheduleId: Long,
-    subjectNumberInDay: Int,
-    startTime: String,
-    endTime: String,
-): List<Subject> {
-    val subjects = mutableListOf<Subject>()
-    val subjectValue = originalSubjectValue.trimStart(' ', ',')
-
-    println("Origin: $subjectValue")
-
-    findAllVariedSubjects(
-        subjectValue,
-        variedSubjectId,
-        firstSubjectId,
-        dailyScheduleId,
-        subjectNumberInDay,
-        startTime, endTime
-    ).forEach {
-        subjects.addAll(it.subjects)
-    }
-
-    for (i in subjects) {
-        //println(i)
-    }
-
-    return subjects
-}
-
-/**
- * Находит все базовые предметы по выбору в данной строке со всеми их вариациями.
- */
-fun findAllVariedSubjects(
-    string: String,
+    subjectValue: String,
     variedSubjectId: Long,
     firstSubjectId: Long,
     dailyScheduleId: Long,
@@ -57,21 +22,21 @@ fun findAllVariedSubjects(
             variedSubjectId, subjectId, dailyScheduleId,
             numberInDay,
             startTime, endTime,
-            string.substring(startIndex),
+            subjectValue.substring(startIndex),
         )?.let {
-            add(it)
+            addAll(it.subjects)
             startIndex += it.endIndex
             subjectId += it.subjects.size
         }
-    } while (subjectParsed != null && startIndex < string.length)
+    } while (subjectParsed != null && startIndex < subjectValue.length)
 }
 
 private val NAME_REGEX = Regex(" [а-яА-Я]+ [А-Я]\\.([А-Я]\\.?)?")
 private val ROOM_REGEX = Regex(" [0-9]{3,4}")
 
 /**
- * Принимает строку без префикса о курсах по выбору.
  * Ищет первый предмет по выбору и все его вариации.
+ * Возвращает индекс конца найденного предмета со всеми вариациями.
  */
 fun findVariedSubjectWithVariants(
     variedSubjectId: Long,
@@ -83,11 +48,9 @@ fun findVariedSubjectWithVariants(
     string: String,
 ): VariedSubjectParsed? { // ",  Введение в искусственный интеллект - Таланов М.О.(в ms teams). в 1311, Григорян К.А. гр.1 в н.н., гр.2 в ч.н. в 1306.,"
     val subjects = mutableListOf<Subject>()
-
-
     //println(string)
 
-    val roomResult = findRoom(string) ?: return null
+    val roomResult = findRoom(string) ?: return null // TODO не работает если ни у базового предмета, ни у его вариаций не указан кабинет
     var room = roomResult.value.trimStart()
     val roomStartIndex = roomResult.range.first
     val subjectWithName = string.substring(
