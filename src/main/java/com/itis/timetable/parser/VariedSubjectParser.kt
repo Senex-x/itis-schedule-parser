@@ -31,7 +31,7 @@ fun parseVariedSubject(
     } while (subjectParsed != null && startIndex < subjectValue.length)
 }
 
-private val NAME_REGEX = Regex(" [а-яА-Я]+ [А-Я]\\.([А-Я]\\.?)?")
+private val NAME_REGEX = Regex("[ (]?[а-яА-Я]+ [А-Я]\\.([А-Я]\\.?)?[ )]?")
 private val ROOM_REGEX = Regex(" [0-9]{3,4}")
 
 /**
@@ -48,9 +48,11 @@ fun findVariedSubjectWithVariants(
     string: String,
 ): VariedSubjectParsed? { // ",  Введение в искусственный интеллект - Таланов М.О.(в ms teams). в 1311, Григорян К.А. гр.1 в н.н., гр.2 в ч.н. в 1306.,"
     val subjects = mutableListOf<Subject>()
-    //println(string)
 
-    val roomResult = findRoom(string) ?: return null // TODO не работает если ни у базового предмета, ни у его вариаций не указан кабинет
+    println("Origin: $string")
+
+    val roomResult = findRoom(string)
+        ?: return null // TODO не работает если ни у базового предмета, ни у его вариаций не указан кабинет
     var room = roomResult.value.trimStart()
     val roomStartIndex = roomResult.range.first
     val subjectWithName = string.substring(
@@ -72,9 +74,8 @@ fun findVariedSubjectWithVariants(
     val betweenNameAndRoom = subjectWithName.substring(nameResult.range.last)
     val additionalTeachers =
         findAllNames(betweenNameAndRoom) // В названии предмета есть имя. Значит аудитория не была указана для базового предмета и мы спарсили все до первого номера ауадитории.
-    if (additionalTeachers.isNotEmpty()) {
-        room = ""
-    }
+    if (additionalTeachers.isNotEmpty()) room = ""
+
     //println("! $betweenNameAndRoom")
 
     val emptyEndRegex = Regex("[а-я][^а-яА-Я]*$")
@@ -99,7 +100,7 @@ fun findVariedSubjectWithVariants(
 
     var subjectId = firstSubjectId
 
-    val baseSubject = Subject(
+    val baseSubject = Subject( // Основной предмет, для которого указаны название и имя преподавателя
         subjectId++,
         dailyScheduleId,
         variedSubjectId,
@@ -116,7 +117,7 @@ fun findVariedSubjectWithVariants(
         baseSubject
     )
 
-    for ((i, additionalTeacher) in additionalTeachers.withIndex()) { // Если были найдены преподаватели без аудиторий
+    for ((i, additionalTeacher) in additionalTeachers.withIndex()) { // Если были найдены преподаватели без аудиторий между названием предмета и первым номером ауадитории
         subjects.add(
             Subject(
                 subjectId++,
@@ -194,7 +195,6 @@ private fun convertPartialSubjects(
 
 /**
  * Ищет первое имя формата " Фамилия А.Б." или " Фамилия А.Б" или " Фамилия А."
- * Падает, если не найдет.
  */
 fun findName(string: String) = NAME_REGEX.find(string)
 
@@ -208,7 +208,7 @@ fun getSubjectTypeFromRoom(room: String) = if (room.trim().length == 4)
     Subject.Type.SEMINAR else Subject.Type.LECTURE
 
 /**
- * Ищет первые частичные предметы после курса по выбору и до следующего.
+ * Ищет все первые частичные предметы до следующего предмета по выбору.
  */
 private fun findPartialSubjects(string: String): PartialSubjectsParsed {
     val partialSubjects = mutableListOf<PartialSubject>()
@@ -238,25 +238,17 @@ private data class PartialSubjectsParsed(
     val endIndex: Int,
 )
 
-private val GROUP_REGEX = Regex("гр\\. ?[1234]")
-
-/**
- * Ищет первый номер группы.
- * Падает, если не найдет.
- */
-fun findGroupNumber(string: String) = Regex("[1-4]").find(GROUP_REGEX.find(string)?.value ?: "")?.value?.toInt()
-
 /**
  * Ищет первый частичный предмет. Он должен содержать имя и номер аудитории.
  * Можно попробовать объеденить с логикой поиска пропущенных имен, если при них не было номеров аудиторий.
  */
 private fun findPartialSubject(string: String): PartialSubject? {
-    //println(string)
+    println("Part: $string")
 
     val nameResult = findName(string) ?: return null
-    val professorInfo = getProfessorInfo(nameResult.value) ?: return null
+    val professorInfo = getProfessorInfo(nameResult.value)!! // Not gonna be null
 
-    val spaceCheckRegex = Regex("(ms)? ?teams")
+    val spaceCheckRegex = Regex("(ms)? ?teams,?") // Добавить "(лекция)"
     val stringBeforeName = string.substring(0, nameResult.range.first)
     val nameResultChecked = spaceCheckRegex.find(stringBeforeName)
 
@@ -268,18 +260,80 @@ private fun findPartialSubject(string: String): PartialSubject? {
 
     //println(nameResult.value)
 
-    val roomResult = findRoom(string) ?: return null
-    val room = roomResult.value.trimStart()
-    val roomEndIndex = roomResult.range.last + 1
+    val room: String
+    val endIndex: Int
+
+    val roomResult = findRoom(string)
+    if(roomResult != null) {
+        room = roomResult.value.trimStart()
+        endIndex = roomResult.range.last + 1
+    } else {
+        room = ""
+        endIndex = nameResult.range.last
+    }
 
     //println(room)
 
     return PartialSubject(
         professorInfo,
         room,
-        roomEndIndex
+        endIndex
     )
 }
+
+/**
+ * Ищет первую пару имя + комната, работает, даже если пары нет.
+ */
+fun findFirstNameWithOptionalRoom(string: String): NameWithRoomParsed? {
+    println("Origin: $string")
+
+    val nameResult = findName(string) ?: return null
+    val professorInfo = getProfessorInfo(nameResult.value)!! // Not gonna be null
+
+    val roomResult = findRoom(string)
+    val nameLastIndex = nameResult.range.last
+    val extraNameResult = findName(string.substring(nameLastIndex))
+    val extraNameStartIndex =  extraNameResult?.range?.first?.plus(nameLastIndex) ?: (string.length - 1)
+
+    val room: String
+    val endIndex: Int
+
+    if(roomResult == null) {
+        room = ""
+        endIndex = nameLastIndex
+        //println("roomResult == null")
+    } else {
+        if(extraNameResult == null) {
+            room = roomResult.value.trimStart()
+            endIndex = roomResult.range.last
+            //println("extraNameResult == null")
+        } else {
+            if(roomResult.range.first < extraNameStartIndex) { // Найдено имя после комнаты
+                room = roomResult.value.trimStart()
+                endIndex = roomResult.range.last
+                //println("roomResult.range.first < extraNameResult.range.first")
+            } else { // Найдено имя до комнаты. Значит первое имя было без комнаты.
+                room = ""
+                endIndex = nameLastIndex
+                //println("else")
+            }
+        }
+    }
+
+    //println(string.substring(endIndex))
+
+    return NameWithRoomParsed(
+        professorInfo,
+        room,
+        endIndex + 1
+    )
+}
+
+data class NameWithRoomParsed( // make private
+    val professorInfo: ProfessorInfo,
+    val room: String,
+    val endIndex: Int,
+)
 
 private data class PartialSubject(
     val professorInfo: ProfessorInfo,
