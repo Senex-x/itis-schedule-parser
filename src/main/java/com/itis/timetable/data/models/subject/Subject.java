@@ -19,7 +19,10 @@ public class Subject {
     @Nullable
     @Column(name = "varied_subject_id")
     private Long variedSubjectId;
-    @Column(name = "number_in_day")
+    @Nullable
+    @Column(name = "english_subject_id")
+    private Long englishSubjectId;
+    @Column(name = "index_in_day")
     private int indexInDay;
     @Column(name = "start_time")
     private String startTime;
@@ -36,10 +39,11 @@ public class Subject {
     @Column(name = "teacher_patronymic")
     private String teacherPatronymic;
 
-    public Subject(long id, long dailyScheduleId, Long variedSubjectId, int indexInDay, String startTime, String endTime, String name, String room, Type type, Kind kind, String teacherName, String teacherSurname, String teacherPatronymic) {
+    public Subject(long id, long dailyScheduleId, @Nullable Long variedSubjectId, @Nullable Long englishSubjectId, int indexInDay, String startTime, String endTime, String name, String room, Type type, Kind kind, String teacherName, String teacherSurname, String teacherPatronymic) {
         this.id = id;
         this.dailyScheduleId = dailyScheduleId;
         this.variedSubjectId = variedSubjectId;
+        this.englishSubjectId = englishSubjectId;
         this.indexInDay = indexInDay;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -81,12 +85,22 @@ public class Subject {
         this.dailyScheduleId = dailyScheduleId;
     }
 
+    @Nullable
     public Long getVariedSubjectId() {
         return variedSubjectId;
     }
 
-    public void setVariedSubjectId(Long variedSubjectId) {
+    public void setVariedSubjectId(@Nullable Long variedSubjectId) {
         this.variedSubjectId = variedSubjectId;
+    }
+
+    @Nullable
+    public Long getEnglishSubjectId() {
+        return englishSubjectId;
+    }
+
+    public void setEnglishSubjectId(@Nullable Long englishSubjectId) {
+        this.englishSubjectId = englishSubjectId;
     }
 
     public int getIndexInDay() {

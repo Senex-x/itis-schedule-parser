@@ -1,10 +1,13 @@
 package com.itis.timetable.parser
 
-import com.itis.timetable.parser.util.trimStartUntilLetters
+import com.itis.timetable.parser.util.findRoom
+import com.itis.timetable.parser.util.parseTeacherInfo
 
 
 fun main() {
     val physical = "Элективные курсы по физической культуре и спорту в УНИКС с 14:00 - 15:30"
+    val physical2 = "Элективные курсы по физической культуре и спорту в УНИКС с 8.00-9.30 \n" +
+            "\t\t\t\t\t\t\t\t\t\t\t\t"
     val string = "Дополнительные главы прикладной математики - Лернер Э.Ю. лекция. в 1301, \n" +
             "Введение в искусственный интеллект - Таланов М.О. гр.1 в н.н., а гр.2 в ч.н.в 1409, Хафизов М.Р. гр.3 в н.н в 1405 ,Григорян К.А. гр.3 в 1306. по н.н. \n" +
             "Введение в робототехнику - Лавренов Р.О. (лекция) в 1311, \n" +
@@ -13,16 +16,26 @@ fun main() {
         "Введение в искусственный интеллект Нурутдинова А.Р. (лекция) в 1311 ms teams,  Костюк Д.И (лекция) в 1310 (ms teams)"
     val str2 =
         "Введение в искусственный интеллект Нурутдинова А.Р. (лекция) в 1311 ms teams,  Костюк Д.И (лекция) в (ms teams)"
+    val english = "Иностранный язык (английский):\n" +
+            "Бибик Е.А в 1301, Мартынова Е.В. в 1302, Планкина Р.М. в 1303, \n" +
+            "Максимова Ю.О. (Гр. Жмурко Л.С.) в 1304, Булина Е.Н.1305, Хрипкова Д.И. в 1404, Гиниятуллина Д.Р. в 1405 \n" +
+            "\t\t\t\t\t"
+
+
+
+//    parseEnglishSubject(english, 1, 1, 1, 1, "", "").forEach {
+//        println(it)
+//    }
 
     //println(string)
 
-
+    /*
     println(string)
     parseVariedSubject(
         string, 1, 1, 1, 1, "", ""
     ).forEach {
         //println(it)
-    }
+    }*/
 
 }
 

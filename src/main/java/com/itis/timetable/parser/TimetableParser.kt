@@ -23,19 +23,20 @@ class TimetableParser {
     fun parse(): List<Schedule> {
         println("############## PARSING IN PROCESS ##############")
 
-        val groupsRange = "P3:P3" // "C3:3"
+        val groupsRange = "C3:3" // "C3:3"
         val groupValues = access.execute(groupsRange)[0]
         val groupsCount = groupValues.filter { cell -> cell.indexOf('-') != -1 }.size
 
         val schedules = mutableListOf<Schedule>()
         var subjectId = 1L
         var variedSubjectId = 1L
+        var englishSubjectId = 1L
 
         for (groupIndex in 0 until groupsCount) {
             if (groupIndex % 2 == 0 || groupIndex == groupsCount - 1)
                 println("# ${(((groupIndex + 1) / groupsCount.toFloat()) * 100).toInt()}% #")
             //println("Group ========================================= $groupIndex")
-            val groupColumnName = (LEFT_START_NUMERIC + groupIndex + 13).toColumnName()
+            val groupColumnName = (LEFT_START_NUMERIC + groupIndex).toColumnName()
             val scheduleId = groupIndex + 1L
 
             val weekRange =
@@ -64,9 +65,7 @@ class TimetableParser {
 
                         val variedSubjectParsed = parseVariedSubject(
                             subjectValue.substring(variedSubjectPrefixResult.range.last + 1),
-                            variedSubjectId,
-                            dailyScheduleId,
-                            subjectId,
+                            variedSubjectId, dailyScheduleId, subjectId,
                             subjectIndexInDay,
                             PERIODS[subjectIndexInDay].first, PERIODS[subjectIndexInDay].second,
                         )
@@ -87,17 +86,35 @@ class TimetableParser {
                                     subjectIndexInDay
                                 )
                             )
-                            // TODO блок дисциплин
-                            // TODO английский..............
-                        } else { // --------------------------------------------------------------- Обычный предмет
-                            dailySubjects.add(
-                                parseSubject(
-                                    subjectId++,
-                                    dailyScheduleId,
-                                    subjectIndexInDay,
-                                    subjectValue,
+
+                        } else { // ----------------------------------------------------------------- Английский
+                            if (isEnglishSubject(subjectValue)) {
+                                englishSubjects.add(
+                                    EnglishSubject(variedSubjectId, dailyScheduleId)
                                 )
-                            )
+
+                                val englishSubjectString = getEnglishSubjectWithoutPrefix(subjectValue)
+                                val englishSubjectParsed = parseEnglishSubject(
+                                    englishSubjectString,
+                                    subjectId, dailyScheduleId, englishSubjectId,
+                                    subjectIndexInDay,
+                                    PERIODS[subjectIndexInDay].first, PERIODS[subjectIndexInDay].second
+                                )
+
+                                dailySubjects.addAll(englishSubjectParsed)
+                                subjectId += englishSubjectParsed.size
+                                englishSubjectId++
+                            } else { // --------------------------------------------------------------- Обычный предмет
+                                // TODO блок дисциплин
+                                dailySubjects.add(
+                                    parseSubject(
+                                        subjectId++,
+                                        dailyScheduleId,
+                                        subjectIndexInDay,
+                                        subjectValue,
+                                    )
+                                )
+                            }
                         }
                     }
                 }

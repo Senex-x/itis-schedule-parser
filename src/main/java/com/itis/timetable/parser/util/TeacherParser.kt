@@ -1,16 +1,25 @@
 package com.itis.timetable.parser.util
 
 /**
+ * Ищет первое имя формата " Фамилия А.Б.", " Фамилия А.Б", " Фамилия А. Б.", " Фамилия А."
+ */
+fun findName(string: String) = NAME_REGEX.find(string)
+
+private val NAME_REGEX = Regex("[ (]?[а-яА-Я]+ [А-Я]\\.([А-Я]\\.?)?[ )]?")
+
+/**
  * Принимает строку, содержащую только имя преподавателя в формате "Фамилия А.Б.", "Фамилия А.Б", "Фамилия А.".
  */
 fun parseTeacherInfo(string: String): TeacherInfo? {
     val surname = Regex("[А-Я][а-я]+ ").find(string)?.value?.trimEnd() ?: return null
     val name = Regex(" [А-Я]\\.").find(string)?.value?.trimStart() ?: return null
-    val patronymicResult = Regex(" [А-Я]\\.([А-Я]\\.?)?").find(string) ?: return null
-    val patronymicWithOptionalDot = patronymicResult.value.substring(3)
-    val patronymic = when (patronymicWithOptionalDot.length) {
-        2 -> patronymicWithOptionalDot
-        1 -> "$patronymicWithOptionalDot."
+    val patronymicResult = Regex(" [А-Я]\\.( ?[А-Я]\\.?)?").find(string) ?: return null
+    val patronymicWithOptionalDot = patronymicResult.value.substring(3) // " A."
+    val patronymic = when {
+        patronymicWithOptionalDot[0] == ' ' && patronymicWithOptionalDot.length == 3 -> patronymicWithOptionalDot.substring(1)
+        patronymicWithOptionalDot[0] == ' ' && patronymicWithOptionalDot.length == 2 -> patronymicWithOptionalDot.substring(1) + '.'
+        patronymicWithOptionalDot.length == 2 -> patronymicWithOptionalDot
+        patronymicWithOptionalDot.length == 1 -> "$patronymicWithOptionalDot."
         else -> ""
     }
 
