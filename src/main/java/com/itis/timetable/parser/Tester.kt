@@ -1,5 +1,7 @@
 package com.itis.timetable.parser
 
+import com.itis.timetable.parser.util.parseVariedSubject
+
 fun main() {
     val string =
         "Разработка корпоративных приложений Сидиков М.Р. гр.1 MS Teams, Аршинов М.В. гр.1 в 1307, \n" +
@@ -12,24 +14,15 @@ fun main() {
     val str2 =
         "Введение в искусственный интеллект Нурутдинова А.Р. (лекция) в 1311 ms teams,  Костюк Д.И (лекция) в (ms teams)"
 
-    println(string)
+    //println(string)
 
-    var index = 0
-    do {
-        val result = findFirstNameWithOptionalRoom(filterString(string).substring(index))?.let {
-            val contentLength =
-                it.room.length + it.professorInfo.name.length + it.professorInfo.surname.length + it.professorInfo.patronymic.length
-            val otherCharactersCount = it.endIndex - contentLength
-            //println("Length ${it.endIndex - contentLength} $it")
-            if (otherCharactersCount > 8) { // Base subject
-                println("Base: $it")
-                println("Subject: ${filterString(string).substring(index, index + otherCharactersCount)}")
-            } else { // Partial subject
-                println("Partial: $it")
-            }
-            index += it.endIndex
-        }
-    } while (result != null && index < string.length)
+    parseVariedSubject(
+        string,1, 1, 1, 1, "", ""
+    ).forEach {
+        println(it)
+    }
+
+
 
     //println(findFirstNameWithOptionalRoom(str))
 /*
@@ -38,6 +31,8 @@ fun main() {
        //println(it)
     } */
 }
+
+
 
 
 val list = listOf(

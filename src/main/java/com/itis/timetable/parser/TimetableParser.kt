@@ -9,6 +9,7 @@ import com.itis.timetable.data.models.subject.Subject
 import com.itis.timetable.data.models.subject.VariedSubject
 import com.itis.timetable.parser.util.AccessService
 import com.itis.timetable.parser.util.getCourseNumber
+import com.itis.timetable.parser.util.parseVariedSubject
 import com.itis.timetable.parser.util.toColumnName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
