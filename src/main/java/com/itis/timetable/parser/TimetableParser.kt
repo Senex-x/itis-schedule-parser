@@ -7,9 +7,8 @@ import com.itis.timetable.data.models.schedule.Schedule
 import com.itis.timetable.data.models.schedule.ScheduleEntity
 import com.itis.timetable.data.models.subject.Subject
 import com.itis.timetable.data.models.subject.VariedSubject
-import com.itis.timetable.parser.util.AccessService
+import com.itis.timetable.parser.access.AccessService
 import com.itis.timetable.parser.util.getCourseNumber
-import com.itis.timetable.parser.util.parseVariedSubject
 import com.itis.timetable.parser.util.toColumnName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -56,18 +55,18 @@ class TimetableParser {
                     //println(subjectIndex)
                     val subjectValue = subjectValueArray[0].replace("\n", " ")
 
-                    val variedSubjectResult = findVariedSubjectPrefix(subjectValue)
-                    if (variedSubjectResult != null) { // ----------------------------------- Курс по выбору
+                    val variedSubjectPrefixResult = findVariedSubjectPrefix(subjectValue)
+                    if (variedSubjectPrefixResult != null) { // ----------------------------------- Курс по выбору
                         variedSubjects.add(
                             VariedSubject(variedSubjectId, dailyScheduleId)
                         )
 
                         val variedSubjectParsed = parseVariedSubject(
-                            subjectValue.substring(variedSubjectResult.range.last + 1),
+                            subjectValue.substring(variedSubjectPrefixResult.range.last + 1),
                             variedSubjectId,
-                            subjectId,
                             dailyScheduleId,
-                            subjectIndexInDay + 1,
+                            subjectId,
+                            subjectIndexInDay,
                             PERIODS[subjectIndexInDay].first,
                             PERIODS[subjectIndexInDay].second,
                         )
@@ -87,7 +86,6 @@ class TimetableParser {
 
                         dailySubjects.add(subject)
                     }
-                    println("Daily subjects: $dailySubjects")
                 }
 
                 if (subjectIndexInDay == CLASSES_PER_DAY - 1 || subjectIndex == weekValues.size - 1) {

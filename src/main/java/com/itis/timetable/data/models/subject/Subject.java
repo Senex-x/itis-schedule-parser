@@ -18,7 +18,7 @@ public class Subject {
     @Column(name = "varied_subject_id")
     private Long variedSubjectId;
     @Column(name = "number_in_day")
-    private int numberInDay;
+    private int indexInDay;
     @Column(name = "start_time")
     private String startTime;
     @Column(name = "end_time")
@@ -27,10 +27,6 @@ public class Subject {
     private String room;
     private Type type;
     private Kind kind;
-    @Column(name = "is_on_even_weeks")
-    private Boolean isOnEvenWeeks;
-    @Column(name = "is_on_odd_weeks")
-    private Boolean isOnOddWeeks;
     @Column(name = "teacher_name")
     private String teacherName;
     @Column(name = "teacher_surname")
@@ -38,19 +34,17 @@ public class Subject {
     @Column(name = "teacher_patronymic")
     private String teacherPatronymic;
 
-    public Subject(long id, long dailyScheduleId, Long variedSubjectId, int numberInDay, String startTime, String endTime, String name, String room, Type type, Kind kind, Boolean isOnEvenWeeks, Boolean isOnOddWeeks, String teacherName, String teacherSurname, String teacherPatronymic) {
+    public Subject(long id, long dailyScheduleId, Long variedSubjectId, int indexInDay, String startTime, String endTime, String name, String room, Type type, Kind kind, String teacherName, String teacherSurname, String teacherPatronymic) {
         this.id = id;
         this.dailyScheduleId = dailyScheduleId;
         this.variedSubjectId = variedSubjectId;
-        this.numberInDay = numberInDay;
+        this.indexInDay = indexInDay;
         this.startTime = startTime;
         this.endTime = endTime;
         this.name = name;
         this.room = room;
         this.type = type;
         this.kind = kind;
-        this.isOnEvenWeeks = isOnEvenWeeks;
-        this.isOnOddWeeks = isOnOddWeeks;
         this.teacherName = teacherName;
         this.teacherSurname = teacherSurname;
         this.teacherPatronymic = teacherPatronymic;
@@ -93,12 +87,12 @@ public class Subject {
         this.variedSubjectId = variedSubjectId;
     }
 
-    public int getNumberInDay() {
-        return numberInDay;
+    public int getIndexInDay() {
+        return indexInDay;
     }
 
-    public void setNumberInDay(int numberInDay) {
-        this.numberInDay = numberInDay;
+    public void setIndexInDay(int numberInDay) {
+        this.indexInDay = numberInDay;
     }
 
     public String getStartTime() {
@@ -147,22 +141,6 @@ public class Subject {
 
     public void setKind(Kind kind) {
         this.kind = kind;
-    }
-
-    public Boolean getOnEvenWeeks() {
-        return isOnEvenWeeks;
-    }
-
-    public void setOnEvenWeeks(Boolean onEvenWeeks) {
-        isOnEvenWeeks = onEvenWeeks;
-    }
-
-    public Boolean getOnOddWeeks() {
-        return isOnOddWeeks;
-    }
-
-    public void setOnOddWeeks(Boolean onOddWeeks) {
-        isOnOddWeeks = onOddWeeks;
     }
 
     public String getTeacherName() {

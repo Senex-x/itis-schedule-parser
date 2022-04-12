@@ -1,7 +1,5 @@
 package com.itis.timetable.parser
 
-import com.itis.timetable.parser.util.parseVariedSubject
-
 fun main() {
     val string =
         "Разработка корпоративных приложений Сидиков М.Р. гр.1 MS Teams, Аршинов М.В. гр.1 в 1307, \n" +

@@ -1,4 +1,4 @@
-package com.itis.timetable.parser
+package com.itis.timetable.parser.util
 
 import com.itis.timetable.data.models.subject.Subject
 
@@ -101,7 +101,7 @@ private fun findVariedSubjectWithVariants(
 
     //println("T: $teacherName")
 
-    val professorInfo = getProfessorInfo(teacherName)!! // Not gonna be null
+    val professorInfo = parseTeacherInfo(teacherName)!! // Not gonna be null
 
     //println(professorInfo)
 
@@ -117,7 +117,6 @@ private fun findVariedSubjectWithVariants(
         room,
         getSubjectTypeFromRoom(room),
         Subject.Kind.ELECTIVE,
-        true, true,
         professorInfo.name, professorInfo.surname, professorInfo.patronymic
     )
     subjects.add(
@@ -136,7 +135,6 @@ private fun findVariedSubjectWithVariants(
                 if (i == additionalTeachers.size - 1) lastAdditionalTeacherRoom else "",
                 getSubjectTypeFromRoom(room),
                 Subject.Kind.ELECTIVE,
-                true, true,
                 additionalTeacher.name, additionalTeacher.surname, additionalTeacher.patronymic
             )
         )
@@ -165,7 +163,7 @@ private fun findVariedSubjectWithVariants(
 private fun findAllNames(string: String) = buildList {
     var startIndex = 0
     do {
-        val professorInfo = getProfessorInfo(string.substring(startIndex))?.let {
+        val professorInfo = parseTeacherInfo(string.substring(startIndex))?.let {
             startIndex += it.endIndex
             add(it)
         }
@@ -184,16 +182,15 @@ private fun convertPartialSubjects(
             add(
                 Subject(
                     subjectId++, dailyScheduleId, variedSubjectId,
-                    numberInDay,
+                    indexInDay,
                     startTime, endTime,
                     name,
                     partialSubject.room,
                     getSubjectTypeFromRoom(partialSubject.room),
                     Subject.Kind.ELECTIVE,
-                    onEvenWeeks, onOddWeeks,
-                    partialSubject.professorInfo.name,
-                    partialSubject.professorInfo.surname,
-                    partialSubject.professorInfo.patronymic,
+                    partialSubject.teacherInfo.name,
+                    partialSubject.teacherInfo.surname,
+                    partialSubject.teacherInfo.patronymic,
                 )
             )
         }
@@ -256,7 +253,7 @@ private fun findPartialSubject(string: String): PartialSubject? {
     println("Part: $string")
 
     val nameResult = findName(string) ?: return null
-    val professorInfo = getProfessorInfo(nameResult.value)!! // Not gonna be null
+    val professorInfo = parseTeacherInfo(nameResult.value)!! // Not gonna be null
 
     val spaceCheckRegex = Regex("(ms)? ?teams,?") // Добавить "(лекция)"
     val stringBeforeName = string.substring(0, nameResult.range.first)
@@ -292,7 +289,7 @@ private fun findPartialSubject(string: String): PartialSubject? {
 }
 
 private data class PartialSubject(
-    val professorInfo: ProfessorInfo,
+    val teacherInfo: TeacherInfo,
     val room: String,
     val endIndex: Int,
 )

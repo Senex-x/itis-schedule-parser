@@ -1,6 +1,8 @@
 package com.itis.timetable.parser
 
 import com.itis.timetable.data.models.subject.Subject
+import com.itis.timetable.parser.util.parseRoom
+import com.itis.timetable.parser.util.parseTeacherInfo
 
 /**
  * Парсит обычный предмет
@@ -13,7 +15,7 @@ fun parseSubject(
 ): Subject {
     //println("------------------------------------------------")
     //println("Subject value: ${subjectValue.replace('\n', ' ')}")
-    val prof = parseProfessorInfo(subjectValue)
+    val prof = parseTeacherInfo(subjectValue)!!
     //println("Professor: $prof")
     val room = parseRoom(subjectValue.substring(prof.endIndex))
     //println("Room: $room")
@@ -29,7 +31,6 @@ fun parseSubject(
         room,
         if (room.length == 4) Subject.Type.SEMINAR else Subject.Type.LECTURE,
         Subject.Kind.ORDINARY,
-        true, true,
         prof.name, prof.surname, prof.patronymic,
     )
 }

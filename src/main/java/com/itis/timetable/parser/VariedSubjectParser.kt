@@ -1,7 +1,7 @@
-package com.itis.timetable.parser.util
+package com.itis.timetable.parser
 
 import com.itis.timetable.data.models.subject.Subject
-import com.itis.timetable.parser.*
+import com.itis.timetable.parser.util.*
 
 /**
  * Принимает строку после префикса о курсах по выбору.
@@ -28,7 +28,7 @@ fun parseVariedSubject(
         //println("Origin: $substring")
         val result = findFirstNameWithOptionalRoom(substring)?.let {
             val contentLength =
-                it.room.length + it.professorInfo.name.length + it.professorInfo.surname.length + it.professorInfo.patronymic.length + 2
+                it.room.length + it.teacherInfo.name.length + it.teacherInfo.surname.length + it.teacherInfo.patronymic.length + 2
             val otherCharactersCount = it.endIndex - contentLength
 
             if (otherCharactersCount > 8) { // ----------------------- Base subject (most likely)
@@ -44,8 +44,7 @@ fun parseVariedSubject(
                     it.room,
                     getSubjectTypeFromRoom(it.room),
                     Subject.Kind.ELECTIVE,
-                    true, true,
-                    it.professorInfo.name, it.professorInfo.surname, it.professorInfo.patronymic
+                    it.teacherInfo.name, it.teacherInfo.surname, it.teacherInfo.patronymic
                 )
             )
             indent += it.endIndex
@@ -62,7 +61,7 @@ private fun findFirstNameWithOptionalRoom(string: String): NameWithRoomParsed? {
     //println("Origin: $string")
 
     val nameResult = findName(string) ?: return null
-    val professorInfo = getProfessorInfo(nameResult.value)!! // Not gonna be null
+    val professorInfo = parseTeacherInfo(nameResult.value)!! // Not gonna be null
 
     val roomResult = findRoom(string)
     val nameLastIndex = nameResult.range.last
@@ -104,7 +103,7 @@ private fun findFirstNameWithOptionalRoom(string: String): NameWithRoomParsed? {
 }
 
 private data class NameWithRoomParsed(
-    val professorInfo: ProfessorInfo,
+    val teacherInfo: TeacherInfo,
     val room: String,
     val endIndex: Int,
 )
