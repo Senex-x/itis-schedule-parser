@@ -14,7 +14,7 @@ fun parseVariedSubject(
     variedSubjectId: Long,
     dailyScheduleId: Long,
     firstSubjectId: Long,
-    numberInDay: Int,
+    indexInDay: Int,
     startTime: String,
     endTime: String,
 ) = buildList {
@@ -39,7 +39,7 @@ fun parseVariedSubject(
             add(
                 Subject(
                     subjectId++, dailyScheduleId, variedSubjectId,
-                    numberInDay, startTime, endTime,
+                    indexInDay, startTime, endTime,
                     lastBaseSubjectName,
                     it.room,
                     getSubjectTypeFromRoom(it.room),

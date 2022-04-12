@@ -2,6 +2,7 @@ package com.itis.timetable.data.models.subject;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.jetbrains.annotations.Nullable;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -15,6 +16,7 @@ public class Subject {
     private long id;
     @Column(name = "daily_schedule_id")
     private long dailyScheduleId;
+    @Nullable
     @Column(name = "varied_subject_id")
     private Long variedSubjectId;
     @Column(name = "number_in_day")
@@ -175,6 +177,7 @@ public class Subject {
     public enum Kind {
         ORDINARY,
         PHYSICAL,
+        ENGLISH,
         ELECTIVE,
         BLOCK,
     }

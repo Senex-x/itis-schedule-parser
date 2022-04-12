@@ -1,6 +1,7 @@
 package com.itis.timetable.parser
 
 fun main() {
+    val physical = "Элективные курсы по физической культуре и спорту в УНИКС с 14:00 - 15:30"
     val string =
         "Разработка корпоративных приложений Сидиков М.Р. гр.1 MS Teams, Аршинов М.В. гр.1 в 1307, \n" +
                 "Веб-программирование Абрамский М.М.(Атнагулов А.А.) гр1 в 1509, Курносов О.В. в 1302, Кошарский И.Е.в 1508, \n" +
@@ -14,13 +15,18 @@ fun main() {
 
     //println(string)
 
+    println(
+    parsePhysicalSubject(
+        physical,1, 1, 1
+    ))
+
+    /*
     parseVariedSubject(
         string,1, 1, 1, 1, "", ""
     ).forEach {
         println(it)
     }
-
-
+*/
 
     //println(findFirstNameWithOptionalRoom(str))
 /*

@@ -65,8 +65,8 @@ private fun emptyProfessorInfo(value: String) = TeacherInfo(
     "",
     "",
     "",
-    (value.indexOfFirst { char -> char in '0'..'9' } - 1).takeIf { int -> int != -2 }
+    (value.indexOfFirst { it in '0'..'9' } - 1).takeIf { it != -2 }
         ?: (value.length - 1),
-    value.indexOfFirst { char -> char in '0'..'9' }.takeIf { int -> int != -1 }
+    value.indexOfFirst { it in '0'..'9' }.takeIf { it != -1 }
         ?: value.length,
 )

@@ -52,11 +52,10 @@ class TimetableParser {
                 val dailyScheduleId = (groupIndex * 6 + dailyScheduleIndexInWeek + 1).toLong()
 
                 if (subjectValueArray.isNotEmpty() && subjectValueArray[0].isNotBlank()) {
-                    //println(subjectIndex)
-                    val subjectValue = subjectValueArray[0].replace("\n", " ")
+                    val subjectValue = subjectValueArray[0].replace("\n", " ") // TODO ?
 
                     val variedSubjectPrefixResult = findVariedSubjectPrefix(subjectValue)
-                    if (variedSubjectPrefixResult != null) { // ----------------------------------- Курс по выбору
+                    if (variedSubjectPrefixResult != null) { // ------------------------------------- Курс по выбору
                         variedSubjects.add(
                             VariedSubject(variedSubjectId, dailyScheduleId)
                         )
@@ -67,8 +66,7 @@ class TimetableParser {
                             dailyScheduleId,
                             subjectId,
                             subjectIndexInDay,
-                            PERIODS[subjectIndexInDay].first,
-                            PERIODS[subjectIndexInDay].second,
+                            PERIODS[subjectIndexInDay].first, PERIODS[subjectIndexInDay].second,
                         )
 
                         //for(i in variedSubjectsParsed) println(i)
@@ -76,15 +74,29 @@ class TimetableParser {
                         dailySubjects.addAll(variedSubjectParsed)
                         subjectId += variedSubjectParsed.size
                         variedSubjectId++
-                    } else { // ------------------------------------------------------------  Обычный предмет
-                        val subject = parseSubject(
-                            subjectId++,
-                            dailyScheduleId,
-                            subjectIndexInDay,
-                            subjectValue,
-                        )
-
-                        dailySubjects.add(subject)
+                    } else {
+                        val physicalSubjectPrefixResult = findPhysicalSubjectPrefix(subjectValue)
+                        if (physicalSubjectPrefixResult != null) { // ------------------------------ Физра
+                            dailySubjects.add(
+                                parsePhysicalSubject(
+                                    subjectValue,
+                                    subjectId++,
+                                    dailyScheduleId,
+                                    subjectIndexInDay
+                                )
+                            )
+                            // TODO блок дисциплин
+                            // TODO английский..............
+                        } else { // --------------------------------------------------------------- Обычный предмет
+                            dailySubjects.add(
+                                parseSubject(
+                                    subjectId++,
+                                    dailyScheduleId,
+                                    subjectIndexInDay,
+                                    subjectValue,
+                                )
+                            )
+                        }
                     }
                 }
 
@@ -139,6 +151,8 @@ class TimetableParser {
 
     private fun findVariedSubjectPrefix(string: String) = VARIED_SUBJECT_PREFIX_REGEX.find(string)
 
+    private fun findPhysicalSubjectPrefix(string: String) = PHYSICAL_SUBJECT_PREFIX_REGEX.find(string)
+
     companion object {
         private const val SHEET_NAME = "'расписание занятий 2 с 2021-2022'"
         private const val LEFT_START_NUMERIC = 3
@@ -148,5 +162,18 @@ class TimetableParser {
         private const val BOTTOM_END = "45"
         private const val CLASSES_PER_DAY = 7
         private val VARIED_SUBJECT_PREFIX_REGEX = Regex(" *[Дд]исциплин[аы] +по +выбору:?[ .,]*")
+        private val PHYSICAL_SUBJECT_PREFIX_REGEX =
+            Regex(" *[Ээ]лективные +курсы +по +(физической)? *(культуре)? *([Уу](НИКС)|(никс))? *")
+        val PERIODS = listOf(
+            "08:30" to "10:00",
+            "10:10" to "11:40",
+            "11:50" to "13:20",
+            "14:00" to "15:30",
+            "15:40" to "17:10",
+            "17:50" to "19:20",
+            "19:30" to "21:00",
+        )
     }
+
+
 }
