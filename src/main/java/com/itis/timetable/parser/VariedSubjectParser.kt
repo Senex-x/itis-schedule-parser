@@ -25,15 +25,12 @@ fun parseVariedSubject(
     var indent = 0
     do {
         val substring = filteredString.substring(indent)
-        //println("Origin: $substring")
+        println("Origin: $substring")
         val result = findFirstNameWithOptionalRoom(substring)?.let {
-            val contentLength =
-                it.room.length + it.teacherInfo.name.length + it.teacherInfo.surname.length + it.teacherInfo.patronymic.length + 2
-            val otherCharactersCount = it.endIndex - contentLength
+            val teacherNameStartIndex = findName(substring)!!.range.first // Not gonna be null
 
-            if (otherCharactersCount > 8) { // ----------------------- Base subject (most likely)
-                val teacherNameStartIndex = findName(substring)!!.range.first // Not gonna be null
-                lastBaseSubjectName = substring.substring(0, teacherNameStartIndex)
+            if (teacherNameStartIndex > 8) { // ----------------------- Base subject (most likely)
+                lastBaseSubjectName = trimStartUntilLetters(substring.substring(0, teacherNameStartIndex)).trimEnd()
             }
 
             add(
@@ -66,22 +63,22 @@ private fun findFirstNameWithOptionalRoom(string: String): NameWithRoomParsed? {
     val roomResult = findRoom(string)
     val nameLastIndex = nameResult.range.last
     val extraNameResult = findName(string.substring(nameLastIndex))
-    val extraNameStartIndex =  extraNameResult?.range?.first?.plus(nameLastIndex) ?: (string.length - 1)
+    val extraNameStartIndex = extraNameResult?.range?.first?.plus(nameLastIndex) ?: (string.length - 1)
 
     val room: String
     val endIndex: Int
 
-    if(roomResult == null) {
+    if (roomResult == null) {
         room = ""
         endIndex = nameLastIndex
         //println("roomResult == null")
     } else {
-        if(extraNameResult == null) {
+        if (extraNameResult == null) {
             room = roomResult.value.trimStart()
             endIndex = roomResult.range.last
             //println("extraNameResult == null")
         } else {
-            if(roomResult.range.first < extraNameStartIndex) { // Найдено имя после комнаты
+            if (roomResult.range.first < extraNameStartIndex) { // Найдено имя после комнаты
                 room = roomResult.value.trimStart()
                 endIndex = roomResult.range.last
                 //println("roomResult.range.first < extraNameResult.range.first")
