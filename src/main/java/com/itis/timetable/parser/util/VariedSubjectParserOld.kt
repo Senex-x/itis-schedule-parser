@@ -18,7 +18,7 @@ fun parseVariedSubjectOld(
     variedSubjectId: Long,
     firstSubjectId: Long,
     dailyScheduleId: Long,
-    numberInDay: Int,
+    indexInDay: Int,
     startTime: String,
     endTime: String
 ) = buildList {
@@ -27,7 +27,7 @@ fun parseVariedSubjectOld(
     do {
         val subjectParsed = findVariedSubjectWithVariants(
             variedSubjectId, subjectId, dailyScheduleId,
-            numberInDay,
+            indexInDay,
             startTime, endTime,
             subjectValue.substring(startIndex),
         )?.let {
@@ -49,7 +49,7 @@ private fun findVariedSubjectWithVariants(
     variedSubjectId: Long,
     firstSubjectId: Long,
     dailyScheduleId: Long,
-    numberInDay: Int,
+    indexInDay: Int,
     startTime: String,
     endTime: String,
     string: String,
@@ -111,7 +111,7 @@ private fun findVariedSubjectWithVariants(
         subjectId++,
         dailyScheduleId,
         variedSubjectId,
-        numberInDay,
+        indexInDay,
         startTime, endTime,
         subjectName,
         room,
@@ -129,7 +129,7 @@ private fun findVariedSubjectWithVariants(
                 subjectId++,
                 dailyScheduleId,
                 variedSubjectId,
-                numberInDay,
+                indexInDay,
                 startTime, endTime,
                 subjectName,
                 if (i == additionalTeachers.size - 1) lastAdditionalTeacherRoom else "",
