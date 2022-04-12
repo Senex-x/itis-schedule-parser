@@ -5,6 +5,7 @@ import com.itis.timetable.data.models.schedule.DailySchedule
 import com.itis.timetable.data.models.schedule.DailyScheduleEntity
 import com.itis.timetable.data.models.schedule.Schedule
 import com.itis.timetable.data.models.schedule.ScheduleEntity
+import com.itis.timetable.data.models.subject.EnglishSubject
 import com.itis.timetable.data.models.subject.Subject
 import com.itis.timetable.data.models.subject.VariedSubject
 import com.itis.timetable.parser.access.AccessService
@@ -44,6 +45,7 @@ class TimetableParser {
             val dailySchedules = mutableListOf<DailySchedule>()
             var dailySubjects = mutableListOf<Subject>()
             var variedSubjects = mutableListOf<VariedSubject>()
+            var englishSubjects = mutableListOf<EnglishSubject>()
 
             for ((subjectIndex, subjectValueArray) in weekValues.withIndex()) {
 
@@ -109,11 +111,12 @@ class TimetableParser {
                             dailyScheduleIndexInWeek,
                         ),
                         variedSubjects,
+                        englishSubjects,
                         dailySubjects,
                     )
-                    dailySubjects = mutableListOf()
                     variedSubjects = mutableListOf()
-
+                    englishSubjects = mutableListOf()
+                    dailySubjects = mutableListOf()
 
                     dailySchedules.add(dailySchedule)
                     //println(dailySchedule)
