@@ -22,20 +22,24 @@ public class Subject {
     @Nullable
     @Column(name = "english_subject_id")
     private Long englishSubjectId;
-    @Column(name = "index_in_day")
+    @Column(name = "index_in_day", nullable = false)
     private int indexInDay;
-    @Column(name = "start_time")
+    @Column(name = "start_time", nullable = false)
     private String startTime;
-    @Column(name = "end_time")
+    @Column(name = "end_time", nullable = false)
     private String endTime;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String room;
+    @Column(nullable = false)
     private Type type;
+    @Column(nullable = false)
     private Kind kind;
     @Column(name = "teacher_name")
-    private String teacherName;
+    private String teacherName; // Make nullable?
     @Column(name = "teacher_surname")
-    private String teacherSurname;
+    private String teacherSurname; // Pass as a separately declared entity?
     @Column(name = "teacher_patronymic")
     private String teacherPatronymic;
 
