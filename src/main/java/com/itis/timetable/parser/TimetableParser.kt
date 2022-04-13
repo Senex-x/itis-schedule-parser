@@ -23,7 +23,7 @@ class TimetableParser {
     fun parse(): List<Schedule> {
         println("############## PARSING IN PROCESS ##############")
 
-        val groupsRange = "C3:C" // "C3:3"
+        val groupsRange = "C3:3" // "C3:3"
         val groupValues = access.execute(groupsRange)[0]
         val groupsCount = groupValues.filter { cell -> cell.indexOf('-') != -1 }.size
 
