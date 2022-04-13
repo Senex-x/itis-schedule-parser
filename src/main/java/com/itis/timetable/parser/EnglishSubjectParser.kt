@@ -3,14 +3,14 @@ package com.itis.timetable.parser
 import com.itis.timetable.data.models.subject.Subject
 import com.itis.timetable.parser.util.findFirstNameWithOptionalRoom
 
+private val ENGLISH_SUBJECT_PREFIX_REGEX =
+    Regex("( *Иностранный язык:?( *\\(английский( проф\\.сф\\.\\)?):?)?[ \n]*)")
+
 fun isEnglishSubject(string: String) =
     ENGLISH_SUBJECT_PREFIX_REGEX.containsMatchIn(string)
 
 fun getEnglishSubjectWithoutPrefix(string: String) =
     ENGLISH_SUBJECT_PREFIX_REGEX.replace(string, "")
-
-private val ENGLISH_SUBJECT_PREFIX_REGEX =
-    Regex("( *Иностранный язык:?( *\\(английский( проф\\.сф\\.\\)?):?)?[ \n]*)")
 
 fun parseEnglishSubject(
     string: String,

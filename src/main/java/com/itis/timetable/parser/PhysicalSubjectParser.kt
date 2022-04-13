@@ -40,8 +40,6 @@ private fun parsePeriod(string: String): Pair<String, String> {
     return firstParsedTime.time to secondParsedTime.time
 }
 
-private val PERIOD_REGEX = Regex(" *с? *\\d\\d[:.]\\d\\d.+\\d\\d[:.]\\d\\d *")
-
 private fun findPeriod(string: String) = PERIOD_REGEX.find(string)
 
 private fun removePeriod(string: String) = PERIOD_REGEX.replace(string, "")

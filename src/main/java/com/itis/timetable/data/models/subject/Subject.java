@@ -186,6 +186,7 @@ public class Subject {
     public enum Type {
         LECTURE,
         SEMINAR,
+        UNDEFINED,
     }
 
     public enum Kind {

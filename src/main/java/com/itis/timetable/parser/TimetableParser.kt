@@ -23,7 +23,7 @@ class TimetableParser {
     fun parse(): List<Schedule> {
         println("############## PARSING IN PROCESS ##############")
 
-        val groupsRange = "C3:3" // "C3:3"
+        val groupsRange = "C3:C" // "C3:3"
         val groupValues = access.execute(groupsRange)[0]
         val groupsCount = groupValues.filter { cell -> cell.indexOf('-') != -1 }.size
 
@@ -77,7 +77,7 @@ class TimetableParser {
                         variedSubjectId++
                     } else {
                         val physicalSubjectPrefixResult = findPhysicalSubjectPrefix(subjectValue)
-                        if (physicalSubjectPrefixResult != null) { // ------------------------------ Физра
+                        if (physicalSubjectPrefixResult != null) { // ------------------------------- Физра
                             dailySubjects.add(
                                 parsePhysicalSubject(
                                     subjectValue,
@@ -104,16 +104,25 @@ class TimetableParser {
                                 dailySubjects.addAll(englishSubjectParsed)
                                 subjectId += englishSubjectParsed.size
                                 englishSubjectId++
-                            } else { // --------------------------------------------------------------- Обычный предмет
-                                // TODO блок дисциплин
-                                dailySubjects.add(
-                                    parseSubject(
-                                        subjectId++,
-                                        dailyScheduleId,
-                                        subjectIndexInDay,
-                                        subjectValue,
+                            } else { // ------------------------------------------------------------- Блок дисциплин
+                                if (isBlockSubject(subjectValue)) {
+                                    dailySubjects.add(
+                                        parseBlockSubject(
+                                            subjectValue, subjectId++, dailyScheduleId,
+                                            subjectIndexInDay,
+                                            PERIODS[subjectIndexInDay].first, PERIODS[subjectIndexInDay].second
+                                        )
                                     )
-                                )
+                                } else { // ---------------------------------------------------------- Обычный предмет
+                                    dailySubjects.add(
+                                        parseSubject(
+                                            subjectId++,
+                                            dailyScheduleId,
+                                            subjectIndexInDay,
+                                            subjectValue,
+                                        )
+                                    )
+                                }
                             }
                         }
                     }
