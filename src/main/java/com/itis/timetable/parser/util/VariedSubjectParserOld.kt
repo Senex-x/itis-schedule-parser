@@ -167,6 +167,7 @@ private fun findAllNames(string: String) = buildList {
     } while (professorInfo != null && startIndex < string.length)
 }
 
+
 private fun convertPartialSubjects(
     partialSubjects: List<PartialSubject>,
     baseSubject: Subject,

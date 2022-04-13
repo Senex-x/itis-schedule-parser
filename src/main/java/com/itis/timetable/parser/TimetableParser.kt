@@ -194,6 +194,4 @@ class TimetableParser {
             "19:30" to "21:00",
         )
     }
-
-
 }
