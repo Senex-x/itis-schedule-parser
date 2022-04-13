@@ -16,6 +16,7 @@ fun parseTeacherInfo(string: String): TeacherInfo? {
     val patronymicResult = Regex(" [А-Я]\\.( ?[А-Я]\\.?)?").find(string) ?: return null
     val patronymicWithOptionalDot = patronymicResult.value.substring(3) // " A."
     val patronymic = when {
+        patronymicWithOptionalDot.isEmpty() -> ""
         patronymicWithOptionalDot[0] == ' ' && patronymicWithOptionalDot.length == 3 -> patronymicWithOptionalDot.substring(1)
         patronymicWithOptionalDot[0] == ' ' && patronymicWithOptionalDot.length == 2 -> patronymicWithOptionalDot.substring(1) + '.'
         patronymicWithOptionalDot.length == 2 -> patronymicWithOptionalDot

@@ -4,6 +4,8 @@ import com.itis.timetable.parser.util.findRoom
 import com.itis.timetable.parser.util.parseTeacherInfo
 
 
+// TODO inspect "Профессиональный иностранный язык (английский) гр №2 Арсентьева Ю.В. в 1408 (MS Teams)"
+
 fun main() {
     val physical = "Элективные курсы по физической культуре и спорту в УНИКС с 14:00 - 15:30"
     val physical2 = "Элективные курсы по физической культуре и спорту в УНИКС с 8.00-9.30 \n" +
