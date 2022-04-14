@@ -9,9 +9,11 @@ fun parsePhysicalSubject(
     dailyScheduleId: Long,
     indexInDay: Int,
 ): Subject {
+    println(string)
+
     val subjectName = removePeriod(string).replace("\n", "").trim()
 
-    //println(subjectName)
+    println(subjectName)
 
     val placeResult = findPlace(string)
     val room = placeResult?.value ?: ""
@@ -42,11 +44,11 @@ private fun parsePeriod(string: String): Pair<String, String> {
 
 private fun findPeriod(string: String) = PERIOD_REGEX.find(string)
 
-private fun removePeriod(string: String) = PERIOD_REGEX.replace(string, "")
+private fun removePeriod(string: String) = PERIOD_REGEX.replace(string, " ")
 
 private val TIME_REGEX = Regex("\\d?\\d[:.]\\d\\d")
 
-private val PERIOD_REGEX = Regex(" *с? *$TIME_REGEX.+$TIME_REGEX *")
+private val PERIOD_REGEX = Regex(" *с? *$TIME_REGEX.{1,3}$TIME_REGEX *")
 
 /**
  * Если не находит, бросает ошибку
