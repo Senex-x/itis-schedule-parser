@@ -110,7 +110,7 @@ class TimetableParser {
                                         parseBlockSubject(
                                             subjectValue, subjectId++, dailyScheduleId,
                                             subjectIndexInDay,
-                                            PERIODS[subjectIndexInDay].first, PERIODS[subjectIndexInDay].second
+                                            PERIODS[0].first, PERIODS[PERIODS.size - 2].second
                                         )
                                     )
                                 } else { // ---------------------------------------------------------- Обычный предмет
