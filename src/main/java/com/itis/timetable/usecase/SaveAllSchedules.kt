@@ -14,6 +14,7 @@ class SaveAllSchedules(
     private val groupRepository: GroupRepository,
     private val scheduleEntityRepository: ScheduleEntityRepository,
     private val saveAllVariedSubjects: SaveAllVariedSubjects,
+    private val saveAllEnglishSubjects: SaveAllEnglishSubjects,
 ) {
     operator fun invoke(schedules: List<Schedule>) {
         for (schedule in schedules) {
@@ -28,8 +29,11 @@ class SaveAllSchedules(
                 val dailyScheduleEntity = dailySchedule.dailyScheduleInfoEntity
                 dailyScheduleEntityRepository.save(dailyScheduleEntity)
 
-                val variedSubjects = dailySchedule.variedSubjects
+                val variedSubjects = dailySchedule.electiveSubjectEntities
                 saveAllVariedSubjects(variedSubjects)
+
+                val englishSubjects = dailySchedule.englishSubjectEntities
+                saveAllEnglishSubjects(englishSubjects)
 
                 val subjects = dailySchedule.subjectEntities
                 subjects.forEach {

@@ -10,14 +10,14 @@ import java.util.List;
 @ToString
 public class DailySchedule {
     private final DailyScheduleEntity dailyScheduleInfoEntity;
-    private final List<VariedSubject> variedSubjects;
-    private final List<EnglishSubject> englishSubjects;
+    private final List<VariedSubject> electiveSubjectEntities;
+    private final List<EnglishSubject> englishSubjectEntities;
     private final List<Subject> subjectEntities;
 
-    public DailySchedule(DailyScheduleEntity dailyScheduleInfoEntity, List<VariedSubject> variedSubjects, List<EnglishSubject> englishSubjects, List<Subject> subjectEntities) {
+    public DailySchedule(DailyScheduleEntity dailyScheduleInfoEntity, List<VariedSubject> electiveSubjectEntities, List<EnglishSubject> englishSubjectEntities, List<Subject> subjectEntities) {
         this.dailyScheduleInfoEntity = dailyScheduleInfoEntity;
-        this.variedSubjects = variedSubjects;
-        this.englishSubjects = englishSubjects;
+        this.electiveSubjectEntities = electiveSubjectEntities;
+        this.englishSubjectEntities = englishSubjectEntities;
         this.subjectEntities = subjectEntities;
     }
 
@@ -25,15 +25,15 @@ public class DailySchedule {
         return dailyScheduleInfoEntity;
     }
 
-    public List<EnglishSubject> getEnglishSubjects() {
-        return englishSubjects;
+    public List<EnglishSubject> getEnglishSubjectEntities() {
+        return englishSubjectEntities;
     }
 
     public List<Subject> getSubjectEntities() {
         return subjectEntities;
     }
 
-    public List<VariedSubject> getVariedSubjects() {
-        return variedSubjects;
+    public List<VariedSubject> getElectiveSubjectEntities() {
+        return electiveSubjectEntities;
     }
 }

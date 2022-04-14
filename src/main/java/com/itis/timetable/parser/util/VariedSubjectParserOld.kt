@@ -178,7 +178,7 @@ private fun convertPartialSubjects(
         with(baseSubject) {
             add(
                 Subject(
-                    subjectId++, dailyScheduleId, variedSubjectId, null,
+                    subjectId++, dailyScheduleId, electiveSubjectId, null,
                     indexInDay,
                     startTime, endTime,
                     name,
