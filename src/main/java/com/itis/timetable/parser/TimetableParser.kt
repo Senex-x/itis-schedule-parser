@@ -90,7 +90,7 @@ class TimetableParser {
                         } else { // ----------------------------------------------------------------- Английский
                             if (isEnglishSubject(subjectValue)) {
                                 englishSubjects.add(
-                                    EnglishSubject(variedSubjectId, dailyScheduleId)
+                                    EnglishSubject(englishSubjectId, dailyScheduleId)
                                 )
 
                                 val englishSubjectString = getEnglishSubjectWithoutPrefix(subjectValue)

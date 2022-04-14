@@ -10,8 +10,10 @@ class ClearDatabase(
     private val groupRepository: GroupRepository,
     private val scheduleEntityRepository: ScheduleEntityRepository,
     private val variedSubjectRepository: VariedSubjectRepository,
+    private val englishSubjectRepository: EnglishSubjectRepository,
 ) {
     operator fun invoke() {
+        englishSubjectRepository.deleteAll()
         variedSubjectRepository.deleteAll()
         subjectRepository.deleteAll()
         dailyScheduleEntityRepository.deleteAll()

@@ -9,11 +9,7 @@ fun parsePhysicalSubject(
     dailyScheduleId: Long,
     indexInDay: Int,
 ): Subject {
-    println(string)
-
     val subjectName = removePeriod(string).replace("\n", "").trim()
-
-    println(subjectName)
 
     val placeResult = findPlace(string)
     val room = placeResult?.value ?: ""
