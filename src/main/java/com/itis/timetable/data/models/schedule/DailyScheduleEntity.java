@@ -15,11 +15,11 @@ import javax.persistence.Table;
 public class DailyScheduleEntity {
     @Id
     private long id;
-    @Column(name = "schedule_id")
+    @Column(name = "schedule_id", nullable = false)
     private long scheduleId;
-    @Column(name = "day_name")
+    @Column(name = "day_name", nullable = false)
     private String dayName;
-    @Column(name = "index_in_week")
+    @Column(name = "index_in_week", nullable = false)
     private int indexInWeek;
 
     public DailyScheduleEntity(long id, long scheduleId, String dayName, int indexInWeek) {

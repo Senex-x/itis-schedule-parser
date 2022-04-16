@@ -9,7 +9,7 @@ fun parsePhysicalSubject(
     dailyScheduleId: Long,
     indexInDay: Int,
 ): Subject {
-    val subjectName = removePeriod(string).trim()
+    val subjectName = removePeriod(string).replace("\n", "").trim()
 
     val placeResult = findPlace(string)
     val room = placeResult?.value ?: ""
@@ -19,7 +19,7 @@ fun parsePhysicalSubject(
     val endTime = period.second
 
     return Subject(
-        subjectId, dailyScheduleId, null,
+        subjectId, dailyScheduleId, null, null,
         indexInDay, startTime, endTime,
         subjectName,
         room,
@@ -30,7 +30,7 @@ fun parsePhysicalSubject(
 }
 
 private fun parsePeriod(string: String): Pair<String, String> {
-    val periodResult = findPeriod(string) ?: return "" to "" // Let's hope it never occurs
+    val periodResult = findPeriod(string) ?: return "" to "" // Let's hope it never happens
     val periodString = periodResult.value
     val firstParsedTime = findTime(periodString)
     val secondParsedTime = findTime(periodString.substring(firstParsedTime.endIndex))
@@ -38,13 +38,13 @@ private fun parsePeriod(string: String): Pair<String, String> {
     return firstParsedTime.time to secondParsedTime.time
 }
 
-private val PERIOD_REGEX = Regex(" *с? *\\d\\d[:.]\\d\\d.+\\d\\d[:.]\\d\\d *")
-
 private fun findPeriod(string: String) = PERIOD_REGEX.find(string)
 
-private fun removePeriod(string: String) = PERIOD_REGEX.replace(string, "")
+private fun removePeriod(string: String) = PERIOD_REGEX.replace(string, " ")
 
-private val TIME_REGEX = Regex("\\d\\d[:.]\\d\\d")
+private val TIME_REGEX = Regex("\\d?\\d[:.]\\d\\d")
+
+private val PERIOD_REGEX = Regex(" *с? *$TIME_REGEX.{1,3}$TIME_REGEX *")
 
 /**
  * Если не находит, бросает ошибку

@@ -18,28 +18,36 @@ public class Subject {
     private long dailyScheduleId;
     @Nullable
     @Column(name = "varied_subject_id")
-    private Long variedSubjectId;
-    @Column(name = "number_in_day")
+    private Long electiveSubjectId;
+    @Nullable
+    @Column(name = "english_subject_id")
+    private Long englishSubjectId;
+    @Column(name = "index_in_day", nullable = false)
     private int indexInDay;
-    @Column(name = "start_time")
+    @Column(name = "start_time", nullable = false)
     private String startTime;
-    @Column(name = "end_time")
+    @Column(name = "end_time", nullable = false)
     private String endTime;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String room;
+    @Column(nullable = false)
     private Type type;
+    @Column(nullable = false)
     private Kind kind;
     @Column(name = "teacher_name")
-    private String teacherName;
+    private String teacherName; // Make nullable?
     @Column(name = "teacher_surname")
-    private String teacherSurname;
+    private String teacherSurname; // Pass as a separately declared entity?
     @Column(name = "teacher_patronymic")
     private String teacherPatronymic;
 
-    public Subject(long id, long dailyScheduleId, Long variedSubjectId, int indexInDay, String startTime, String endTime, String name, String room, Type type, Kind kind, String teacherName, String teacherSurname, String teacherPatronymic) {
+    public Subject(long id, long dailyScheduleId, @Nullable Long electiveSubjectId, @Nullable Long englishSubjectId, int indexInDay, String startTime, String endTime, String name, String room, Type type, Kind kind, String teacherName, String teacherSurname, String teacherPatronymic) {
         this.id = id;
         this.dailyScheduleId = dailyScheduleId;
-        this.variedSubjectId = variedSubjectId;
+        this.electiveSubjectId = electiveSubjectId;
+        this.englishSubjectId = englishSubjectId;
         this.indexInDay = indexInDay;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -81,12 +89,22 @@ public class Subject {
         this.dailyScheduleId = dailyScheduleId;
     }
 
-    public Long getVariedSubjectId() {
-        return variedSubjectId;
+    @Nullable
+    public Long getElectiveSubjectId() {
+        return electiveSubjectId;
     }
 
-    public void setVariedSubjectId(Long variedSubjectId) {
-        this.variedSubjectId = variedSubjectId;
+    public void setElectiveSubjectId(@Nullable Long variedSubjectId) {
+        this.electiveSubjectId = variedSubjectId;
+    }
+
+    @Nullable
+    public Long getEnglishSubjectId() {
+        return englishSubjectId;
+    }
+
+    public void setEnglishSubjectId(@Nullable Long englishSubjectId) {
+        this.englishSubjectId = englishSubjectId;
     }
 
     public int getIndexInDay() {
@@ -172,6 +190,7 @@ public class Subject {
     public enum Type {
         LECTURE,
         SEMINAR,
+        UNDEFINED,
     }
 
     public enum Kind {

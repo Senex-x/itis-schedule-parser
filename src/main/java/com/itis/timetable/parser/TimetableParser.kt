@@ -5,6 +5,7 @@ import com.itis.timetable.data.models.schedule.DailySchedule
 import com.itis.timetable.data.models.schedule.DailyScheduleEntity
 import com.itis.timetable.data.models.schedule.Schedule
 import com.itis.timetable.data.models.schedule.ScheduleEntity
+import com.itis.timetable.data.models.subject.EnglishSubject
 import com.itis.timetable.data.models.subject.Subject
 import com.itis.timetable.data.models.subject.VariedSubject
 import com.itis.timetable.parser.access.AccessService
@@ -22,19 +23,20 @@ class TimetableParser {
     fun parse(): List<Schedule> {
         println("############## PARSING IN PROCESS ##############")
 
-        val groupsRange = "P3:P3" // "C3:3"
+        val groupsRange = "C3:3" // "C3:3"
         val groupValues = access.execute(groupsRange)[0]
         val groupsCount = groupValues.filter { cell -> cell.indexOf('-') != -1 }.size
 
         val schedules = mutableListOf<Schedule>()
         var subjectId = 1L
         var variedSubjectId = 1L
+        var englishSubjectId = 1L
 
         for (groupIndex in 0 until groupsCount) {
             if (groupIndex % 2 == 0 || groupIndex == groupsCount - 1)
                 println("# ${(((groupIndex + 1) / groupsCount.toFloat()) * 100).toInt()}% #")
             //println("Group ========================================= $groupIndex")
-            val groupColumnName = (LEFT_START_NUMERIC + groupIndex + 13).toColumnName()
+            val groupColumnName = (LEFT_START_NUMERIC + groupIndex).toColumnName()
             val scheduleId = groupIndex + 1L
 
             val weekRange =
@@ -44,6 +46,7 @@ class TimetableParser {
             val dailySchedules = mutableListOf<DailySchedule>()
             var dailySubjects = mutableListOf<Subject>()
             var variedSubjects = mutableListOf<VariedSubject>()
+            var englishSubjects = mutableListOf<EnglishSubject>()
 
             for ((subjectIndex, subjectValueArray) in weekValues.withIndex()) {
 
@@ -62,9 +65,7 @@ class TimetableParser {
 
                         val variedSubjectParsed = parseVariedSubject(
                             subjectValue.substring(variedSubjectPrefixResult.range.last + 1),
-                            variedSubjectId,
-                            dailyScheduleId,
-                            subjectId,
+                            variedSubjectId, dailyScheduleId, subjectId,
                             subjectIndexInDay,
                             PERIODS[subjectIndexInDay].first, PERIODS[subjectIndexInDay].second,
                         )
@@ -76,7 +77,7 @@ class TimetableParser {
                         variedSubjectId++
                     } else {
                         val physicalSubjectPrefixResult = findPhysicalSubjectPrefix(subjectValue)
-                        if (physicalSubjectPrefixResult != null) { // ------------------------------ Физра
+                        if (physicalSubjectPrefixResult != null) { // ------------------------------- Физра
                             dailySubjects.add(
                                 parsePhysicalSubject(
                                     subjectValue,
@@ -85,17 +86,44 @@ class TimetableParser {
                                     subjectIndexInDay
                                 )
                             )
-                            // TODO блок дисциплин
-                            // TODO английский..............
-                        } else { // --------------------------------------------------------------- Обычный предмет
-                            dailySubjects.add(
-                                parseSubject(
-                                    subjectId++,
-                                    dailyScheduleId,
-                                    subjectIndexInDay,
-                                    subjectValue,
+
+                        } else { // ----------------------------------------------------------------- Английский
+                            if (isEnglishSubject(subjectValue)) {
+                                englishSubjects.add(
+                                    EnglishSubject(englishSubjectId, dailyScheduleId)
                                 )
-                            )
+
+                                val englishSubjectString = getEnglishSubjectWithoutPrefix(subjectValue)
+                                val englishSubjectParsed = parseEnglishSubject(
+                                    englishSubjectString,
+                                    subjectId, dailyScheduleId, englishSubjectId,
+                                    subjectIndexInDay,
+                                    PERIODS[subjectIndexInDay].first, PERIODS[subjectIndexInDay].second
+                                )
+
+                                dailySubjects.addAll(englishSubjectParsed)
+                                subjectId += englishSubjectParsed.size
+                                englishSubjectId++
+                            } else { // ------------------------------------------------------------- Блок дисциплин
+                                if (isBlockSubject(subjectValue)) {
+                                    dailySubjects.add(
+                                        parseBlockSubject(
+                                            subjectValue, subjectId++, dailyScheduleId,
+                                            subjectIndexInDay,
+                                            PERIODS[0].first, PERIODS[PERIODS.size - 2].second
+                                        )
+                                    )
+                                } else { // ---------------------------------------------------------- Обычный предмет
+                                    dailySubjects.add(
+                                        parseSubject(
+                                            subjectId++,
+                                            dailyScheduleId,
+                                            subjectIndexInDay,
+                                            subjectValue,
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -109,11 +137,12 @@ class TimetableParser {
                             dailyScheduleIndexInWeek,
                         ),
                         variedSubjects,
+                        englishSubjects,
                         dailySubjects,
                     )
-                    dailySubjects = mutableListOf()
                     variedSubjects = mutableListOf()
-
+                    englishSubjects = mutableListOf()
+                    dailySubjects = mutableListOf()
 
                     dailySchedules.add(dailySchedule)
                     //println(dailySchedule)
@@ -174,6 +203,4 @@ class TimetableParser {
             "19:30" to "21:00",
         )
     }
-
-
 }

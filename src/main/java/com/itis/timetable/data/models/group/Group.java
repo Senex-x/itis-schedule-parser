@@ -19,8 +19,9 @@ public class Group {
 
     @Id
     private long id;
+    @Column(nullable = false)
     private String name;
-    @Column(name = "course_number")
+    @Column(name = "course_number", nullable = false)
     private int courseNumber;
 
     public long getId() {

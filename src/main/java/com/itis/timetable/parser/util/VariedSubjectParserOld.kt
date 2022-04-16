@@ -38,9 +38,6 @@ fun parseVariedSubjectOld(
     } while (subjectParsed != null && startIndex < subjectValue.length)
 }
 
-private val NAME_REGEX = Regex("[ (]?[а-яА-Я]+ [А-Я]\\.([А-Я]\\.?)?[ )]?")
-private val ROOM_REGEX = Regex(" [0-9]{3,4}")
-
 /**
  * Ищет первый предмет по выбору и все его вариации.
  * Возвращает индекс конца найденного предмета со всеми вариациями.
@@ -110,7 +107,7 @@ private fun findVariedSubjectWithVariants(
     val baseSubject = Subject( // Основной предмет, для которого указаны название и имя преподавателя
         subjectId++,
         dailyScheduleId,
-        variedSubjectId,
+        variedSubjectId, null,
         indexInDay,
         startTime, endTime,
         subjectName,
@@ -128,7 +125,7 @@ private fun findVariedSubjectWithVariants(
             Subject(
                 subjectId++,
                 dailyScheduleId,
-                variedSubjectId,
+                variedSubjectId, null,
                 indexInDay,
                 startTime, endTime,
                 subjectName,
@@ -181,7 +178,7 @@ private fun convertPartialSubjects(
         with(baseSubject) {
             add(
                 Subject(
-                    subjectId++, dailyScheduleId, variedSubjectId,
+                    subjectId++, dailyScheduleId, electiveSubjectId, null,
                     indexInDay,
                     startTime, endTime,
                     name,
@@ -196,17 +193,6 @@ private fun convertPartialSubjects(
         }
     }
 }
-
-/**
- * Ищет первое имя формата " Фамилия А.Б." или " Фамилия А.Б" или " Фамилия А."
- */
-fun findName(string: String) = NAME_REGEX.find(string)
-
-/**
- * Ищет первый номер комнаты из 3-х или 4-х цифр формата " 1234".
- * Падает, если не найдет.
- */
-fun findRoom(string: String) = ROOM_REGEX.find(string)
 
 /**
  * Работает некорректно, если лекция проводится в кабинете с номером из 4 цифр
