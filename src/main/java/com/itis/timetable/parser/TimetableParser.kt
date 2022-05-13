@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.DayOfWeek
 
-A/* Некорректно парсится:
+/* Некорректно парсится:
     Технологическая (проектно-технологическая) практика  в 1310 , Чупин М.М. в 1309.
 */
 
