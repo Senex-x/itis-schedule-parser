@@ -199,5 +199,6 @@ public class Subject {
         ENGLISH,
         ELECTIVE,
         BLOCK,
+        EMPTY,
     }
 }

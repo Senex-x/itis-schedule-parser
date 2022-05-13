@@ -15,6 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.DayOfWeek
 
+A/* Некорректно парсится:
+    Технологическая (проектно-технологическая) практика  в 1310 , Чупин М.М. в 1309.
+*/
+
 @Component
 class TimetableParser {
     @Autowired
@@ -86,7 +90,6 @@ class TimetableParser {
                                     subjectIndexInDay
                                 )
                             )
-
                         } else { // ----------------------------------------------------------------- Английский
                             if (isEnglishSubject(subjectValue)) {
                                 englishSubjects.add(
@@ -126,6 +129,19 @@ class TimetableParser {
                             }
                         }
                     }
+                } else { // No subject at this time
+                    dailySubjects.add(
+                        Subject(
+                            subjectId++,
+                            dailyScheduleId,
+                            null, null,
+                            subjectIndexInDay,
+                            PERIODS[subjectIndexInDay].first, PERIODS[subjectIndexInDay].second,
+                            "", "",
+                            Subject.Type.UNDEFINED, Subject.Kind.EMPTY,
+                            "", "", ""
+                        )
+                    )
                 }
 
                 if (subjectIndexInDay == CLASSES_PER_DAY - 1 || subjectIndex == weekValues.size - 1) {
