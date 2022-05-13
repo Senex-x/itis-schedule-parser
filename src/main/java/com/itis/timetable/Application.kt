@@ -18,8 +18,11 @@ import org.springframework.context.annotation.ComponentScan
     scanBasePackages = ["com.itis.timetable"],
 )
 @EntityScan(basePackages = ["com.itis.timetable.data.models"])
-open class Application : SpringBootServletInitializer()
-
-fun main(args: Array<String>) {
-    runApplication<Application>(*args)
+open class Application : SpringBootServletInitializer() {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            runApplication<Application>(*args)
+        }
+    }
 }
