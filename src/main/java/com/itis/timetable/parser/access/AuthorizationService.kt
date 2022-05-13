@@ -54,7 +54,7 @@ class AuthorizationService {
         private val ACCESS_SCOPES = Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY)
         private val JSON_FACTORY = GsonFactory.getDefaultInstance()
         private const val APPLICATION_NAME = "Timetable parser"
-        private const val TOKENS_DIRECTORY_PATH = "tokens"
+        private const val TOKENS_DIRECTORY_PATH = "src/main/resources"
         private const val CREDENTIALS_FILE_PATH = "/credentials.json"
     }
 }
