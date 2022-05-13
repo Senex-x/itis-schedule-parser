@@ -24,19 +24,19 @@ class AuthorizationService {
         Sheets.Builder(
             HTTP_TRANSPORT,
             JSON_FACTORY,
-            getCredentials(HTTP_TRANSPORT)
+            getCredentials()
         )
             .setApplicationName(APPLICATION_NAME)
             .build()!!
 
-    private fun getCredentials(httpTransport: NetHttpTransport): Credential {
+    private fun getCredentials(): Credential {
         // TODO: Inspect
         val inputStream = AuthorizationService::class.java.getResourceAsStream(CREDENTIALS_FILE_PATH)
 
         val clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, InputStreamReader(inputStream))
 
         val flow = GoogleAuthorizationCodeFlow.Builder(
-            httpTransport,
+            HTTP_TRANSPORT,
             JSON_FACTORY,
             clientSecrets,
             ACCESS_SCOPES
