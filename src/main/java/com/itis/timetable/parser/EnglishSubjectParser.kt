@@ -1,6 +1,6 @@
 package com.itis.timetable.parser
 
-import com.itis.timetable.data.models.subject.Subject
+import com.itis.timetable.data.entity.subject.Subject
 import com.itis.timetable.parser.util.findFirstNameWithOptionalRoom
 
 private val ENGLISH_SUBJECT_PREFIX_REGEX =

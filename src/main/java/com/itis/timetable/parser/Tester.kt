@@ -1,7 +1,5 @@
 package com.itis.timetable.parser
 
-import com.itis.timetable.data.models.subject.Subject
-
 
 // TODO inspect "Профессиональный иностранный язык (английский) гр №2 Арсентьева Ю.В. в 1408 (MS Teams)"
 

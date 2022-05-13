@@ -1,8 +1,8 @@
-package com.itis.timetable.data.models.schedule;
+package com.itis.timetable.data.entity.schedule;
 
-import com.itis.timetable.data.models.subject.EnglishSubject;
-import com.itis.timetable.data.models.subject.Subject;
-import com.itis.timetable.data.models.subject.VariedSubject;
+import com.itis.timetable.data.entity.subject.EnglishSubject;
+import com.itis.timetable.data.entity.subject.Subject;
+import com.itis.timetable.data.entity.subject.VariedSubject;
 import lombok.ToString;
 
 import java.util.List;

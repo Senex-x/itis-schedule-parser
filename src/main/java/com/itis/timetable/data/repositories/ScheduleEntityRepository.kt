@@ -1,6 +1,6 @@
 package com.itis.timetable.data.repositories
 
-import com.itis.timetable.data.models.schedule.ScheduleEntity
+import com.itis.timetable.data.entity.schedule.ScheduleEntity
 import org.hibernate.SessionFactory
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional

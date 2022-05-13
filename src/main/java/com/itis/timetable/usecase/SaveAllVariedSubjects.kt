@@ -1,6 +1,6 @@
 package com.itis.timetable.usecase
 
-import com.itis.timetable.data.models.subject.VariedSubject
+import com.itis.timetable.data.entity.subject.VariedSubject
 import com.itis.timetable.data.repositories.VariedSubjectRepository
 import org.springframework.stereotype.Component
 

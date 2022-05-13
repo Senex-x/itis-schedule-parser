@@ -1,6 +1,6 @@
 package com.itis.timetable.usecase
 
-import com.itis.timetable.data.models.schedule.Schedule
+import com.itis.timetable.data.entity.schedule.Schedule
 import org.springframework.stereotype.Component
 
 @Component

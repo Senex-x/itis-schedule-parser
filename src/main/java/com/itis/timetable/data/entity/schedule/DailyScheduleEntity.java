@@ -1,4 +1,4 @@
-package com.itis.timetable.data.models.schedule;
+package com.itis.timetable.data.entity.schedule;
 
 import lombok.NoArgsConstructor;
 import lombok.ToString;

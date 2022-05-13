@@ -1,6 +1,6 @@
 package com.itis.timetable.data.repositories
 
-import com.itis.timetable.data.models.subject.VariedSubject
+import com.itis.timetable.data.entity.subject.VariedSubject
 import org.hibernate.SessionFactory
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional

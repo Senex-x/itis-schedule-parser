@@ -1,8 +1,8 @@
 package com.itis.timetable.usecase
 
-import com.itis.timetable.data.models.group.Group
-import com.itis.timetable.data.models.schedule.DailySchedule
-import com.itis.timetable.data.models.schedule.Schedule
+import com.itis.timetable.data.entity.group.Group
+import com.itis.timetable.data.entity.schedule.DailySchedule
+import com.itis.timetable.data.entity.schedule.Schedule
 import com.itis.timetable.data.repositories.DailyScheduleEntityRepository
 import com.itis.timetable.data.repositories.ScheduleEntityRepository
 import com.itis.timetable.data.repositories.SubjectRepository

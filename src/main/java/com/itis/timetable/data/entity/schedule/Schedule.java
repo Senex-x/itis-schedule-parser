@@ -1,6 +1,6 @@
-package com.itis.timetable.data.models.schedule;
+package com.itis.timetable.data.entity.schedule;
 
-import com.itis.timetable.data.models.group.Group;
+import com.itis.timetable.data.entity.group.Group;
 import lombok.ToString;
 
 import java.util.List;

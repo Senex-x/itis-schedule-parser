@@ -1,6 +1,6 @@
 package com.itis.timetable.parser
 
-import com.itis.timetable.data.models.subject.Subject
+import com.itis.timetable.data.entity.subject.Subject
 
 // Элективные курсы по физической культуре и спорту в УНИКС с 14:00 - 15:30
 fun parsePhysicalSubject(

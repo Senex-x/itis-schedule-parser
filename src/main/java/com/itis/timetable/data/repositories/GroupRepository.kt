@@ -1,6 +1,6 @@
 package com.itis.timetable.data.repositories
 
-import com.itis.timetable.data.models.group.Group
+import com.itis.timetable.data.entity.group.Group
 import org.hibernate.SessionFactory
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional

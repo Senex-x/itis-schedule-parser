@@ -1,49 +1,29 @@
-package com.itis.timetable.data.models.subject;
+package com.itis.timetable.data.model;
 
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.jetbrains.annotations.Nullable;
 
-import javax.persistence.*;
-import java.util.Objects;
-
-@NoArgsConstructor
 @ToString
-@Entity
-@Table(name = "subjects", schema = "public")
-public class Subject {
-    @Id
+public class SubjectDto {
     private long id;
-    @Column(name = "daily_schedule_id")
     private long dailyScheduleId;
-    @Nullable
-    @Column(name = "varied_subject_id")
     private Long electiveSubjectId;
-    @Nullable
-    @Column(name = "english_subject_id")
     private Long englishSubjectId;
-    @Column(name = "index_in_day", nullable = false)
     private int indexInDay;
-    @Column(name = "start_time", nullable = false)
     private String startTime;
-    @Column(name = "end_time", nullable = false)
     private String endTime;
-    @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
     private String room;
-    @Column(nullable = false)
     private Type type;
-    @Column(nullable = false)
     private Kind kind;
-    @Column(name = "teacher_name")
     private String teacherName; // Make nullable?
-    @Column(name = "teacher_surname")
     private String teacherSurname; // Pass as a separately declared entity?
-    @Column(name = "teacher_patronymic")
     private String teacherPatronymic;
 
-    public Subject(long id, long dailyScheduleId, @Nullable Long electiveSubjectId, @Nullable Long englishSubjectId, int indexInDay, String startTime, String endTime, String name, String room, Type type, Kind kind, String teacherName, String teacherSurname, String teacherPatronymic) {
+    public SubjectDto() {}
+
+    public SubjectDto(long id, long dailyScheduleId, @Nullable Long electiveSubjectId, @Nullable Long englishSubjectId, int indexInDay, String startTime, String endTime, String name, String room, Type type, Kind kind, String teacherName, String teacherSurname, String teacherPatronymic) {
         this.id = id;
         this.dailyScheduleId = dailyScheduleId;
         this.electiveSubjectId = electiveSubjectId;
@@ -58,14 +38,6 @@ public class Subject {
         this.teacherName = teacherName;
         this.teacherSurname = teacherSurname;
         this.teacherPatronymic = teacherPatronymic;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Subject subject = (Subject) o;
-        return Objects.equals(id, subject.id);
     }
 
     @Override

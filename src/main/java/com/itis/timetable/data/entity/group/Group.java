@@ -1,4 +1,4 @@
-package com.itis.timetable.data.models.group;
+package com.itis.timetable.data.entity.group;
 
 import lombok.*;
 import org.hibernate.Hibernate;

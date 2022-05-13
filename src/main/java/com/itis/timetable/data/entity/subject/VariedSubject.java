@@ -1,4 +1,4 @@
-package com.itis.timetable.data.models.subject;
+package com.itis.timetable.data.entity.subject;
 
 import lombok.NoArgsConstructor;
 import lombok.ToString;

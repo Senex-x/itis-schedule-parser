@@ -1,6 +1,6 @@
 package com.itis.timetable.parser.util
 
-import com.itis.timetable.data.models.subject.Subject
+import com.itis.timetable.data.entity.subject.Subject
 
 // TODO Можно написать алгос на основе переносов строки
 

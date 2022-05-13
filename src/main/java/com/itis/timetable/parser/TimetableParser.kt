@@ -1,13 +1,13 @@
 package com.itis.timetable.parser
 
-import com.itis.timetable.data.models.group.Group
-import com.itis.timetable.data.models.schedule.DailySchedule
-import com.itis.timetable.data.models.schedule.DailyScheduleEntity
-import com.itis.timetable.data.models.schedule.Schedule
-import com.itis.timetable.data.models.schedule.ScheduleEntity
-import com.itis.timetable.data.models.subject.EnglishSubject
-import com.itis.timetable.data.models.subject.Subject
-import com.itis.timetable.data.models.subject.VariedSubject
+import com.itis.timetable.data.entity.group.Group
+import com.itis.timetable.data.entity.schedule.DailySchedule
+import com.itis.timetable.data.entity.schedule.DailyScheduleEntity
+import com.itis.timetable.data.entity.schedule.Schedule
+import com.itis.timetable.data.entity.schedule.ScheduleEntity
+import com.itis.timetable.data.entity.subject.EnglishSubject
+import com.itis.timetable.data.entity.subject.Subject
+import com.itis.timetable.data.entity.subject.VariedSubject
 import com.itis.timetable.parser.access.AccessService
 import com.itis.timetable.parser.util.getCourseNumber
 import com.itis.timetable.parser.util.toColumnName

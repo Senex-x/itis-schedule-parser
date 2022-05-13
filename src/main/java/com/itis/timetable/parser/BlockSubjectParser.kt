@@ -1,6 +1,6 @@
 package com.itis.timetable.parser
 
-import com.itis.timetable.data.models.subject.Subject
+import com.itis.timetable.data.entity.subject.Subject
 
 fun isBlockSubject(string: String) =
     BLOCK_SUBJECT_PREFIX_REGEX.containsMatchIn(string)
