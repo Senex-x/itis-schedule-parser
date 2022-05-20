@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.ResponseBody
+import javax.validation.constraints.Min
 
 @Controller
 class GetScheduleController(
@@ -15,7 +16,7 @@ class GetScheduleController(
 ) {
     @ResponseBody
     @GetMapping("/schedule/{groupId:[0-9]+}")
-    fun get(@PathVariable groupId: Long): String = GsonBuilder()
+    fun get(@PathVariable @Min(1) groupId: Long): String = GsonBuilder()
         .setPrettyPrinting()
         .create()
         .toJson(getScheduleByGroupId(groupId))
