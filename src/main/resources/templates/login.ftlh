@@ -9,7 +9,7 @@
     <script type="text/javascript" src="<@spring.url "js/jquery.min.js"/>"></script>
 </head>
 <body>
-<form action="loginpost" method="post">
+<form action="login" method="post">
     <label>Nickname
         <input name="nickname" type="text"/>
     </label>

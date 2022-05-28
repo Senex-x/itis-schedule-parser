@@ -3,6 +3,7 @@ package com.itis.timetable.controllers
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 
+
 @Controller
 class LoginController {
 
@@ -12,10 +13,12 @@ class LoginController {
         return "login"
     }
 
-    @ResponseBody
-    @PostMapping("/loginpost")
-    fun post(@RequestBody fullName: String): String {
-        return "Hello $fullName"
+    @PostMapping("/login")
+    fun post(
+        @RequestParam("nickname") nickname: String,
+        @RequestParam("password") password: String,
+    ) {
+
     }
 }
 

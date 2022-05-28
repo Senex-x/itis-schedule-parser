@@ -13,7 +13,7 @@ open class SpringSecurityConfig: WebSecurityConfigurerAdapter() {
     private lateinit var handler: AccessDeniedHandler
 
     override fun configure(http: HttpSecurity) {
-        http.csrf().disable().authorizeRequests()
+        http.csrf().disable() /*.authorizeRequests()
             .antMatchers("/").permitAll()
             .antMatchers("/groups").hasAnyRole("User")
             .anyRequest().authenticated()
@@ -22,7 +22,7 @@ open class SpringSecurityConfig: WebSecurityConfigurerAdapter() {
             .and()
             .logout().permitAll()
             .and()
-            .exceptionHandling().accessDeniedHandler(handler)
+            .exceptionHandling().accessDeniedHandler(handler)*/
     }
 
     @Autowired
