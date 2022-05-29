@@ -9,7 +9,7 @@ import java.io.Serializable
 @Transactional
 abstract class HibernateRepository<T, K : Serializable>(
     private val sessionFactory: SessionFactory
-) : CrudRepository<T, K> {
+) : CustomCrudRepository<T, K> {
 
     abstract fun getEntityName(): String
 

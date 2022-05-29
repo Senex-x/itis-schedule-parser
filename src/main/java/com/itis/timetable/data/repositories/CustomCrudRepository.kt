@@ -2,7 +2,7 @@ package com.itis.timetable.data.repositories
 
 import java.io.Serializable
 
-interface CrudRepository<T, K: Serializable> {
+interface CustomCrudRepository<T, K: Serializable> {
 
     fun save(item: T): K
 
