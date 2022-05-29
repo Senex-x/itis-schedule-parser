@@ -9,9 +9,9 @@
     <script type="text/javascript" src="<@spring.url "js/jquery.min.js"/>"></script>
 </head>
 <body>
-<form action="login" method="post">
+<form action="/authenticate" method="post">
     <label>Nickname
-        <input name="nickname" type="text"/>
+        <input name="username" type="text"/>
     </label>
     <label>Password
         <input name="password" type="password"/>

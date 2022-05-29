@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-class MainAccessDeniedHandler: AccessDeniedHandler {
+open class MainAccessDeniedHandler: AccessDeniedHandler {
     override fun handle(
         request: HttpServletRequest,
         response: HttpServletResponse,
