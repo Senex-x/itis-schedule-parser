@@ -3,19 +3,11 @@ package com.itis.timetable.data.repositories
 import com.itis.timetable.data.models.subject.EnglishSubject
 import com.itis.timetable.data.models.subject.VariedSubject
 import org.hibernate.SessionFactory
+import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
-@Transactional
-@Component
-open class EnglishSubjectRepository(
-    sessionFactory: SessionFactory
-): HibernateRepository<EnglishSubject, Long>(sessionFactory) {
-    override fun getEntityName() = EnglishSubject::class.simpleName!!
+interface EnglishSubjectRepository: CrudRepository<EnglishSubject, Long> {
 
-    @Suppress("UNCHECKED_CAST")
-    fun getAllByDailyScheduleId(dailyScheduleId: Long) = getSession()
-        .createQuery("from ${getEntityName()} where dailyScheduleId = :dailyScheduleId").apply {
-            setParameter("dailyScheduleId", dailyScheduleId)
-        }.list() as List<EnglishSubject>
+    fun findAllByDailyScheduleId(dailyScheduleId: Long): List<EnglishSubject>
 }
