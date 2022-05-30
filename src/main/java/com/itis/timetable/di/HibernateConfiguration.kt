@@ -15,13 +15,13 @@ open class HibernateConfiguration {
     @Autowired
     private lateinit var environment: Environment
 
-    @Bean
+    @Bean(name = ["transactionManager"])
     @Autowired
     open fun provideTransactionManager(
         sessionFactory: SessionFactory
     ) = HibernateTransactionManager(sessionFactory)
 
-    @Bean
+    @Bean(name = ["entityManagerFactory"])
     open fun provideSessionFactory() = LocalSessionFactoryBean().apply {
         setDataSource(provideDataSource())
         setPackagesToScan("com.itis.timetable")
