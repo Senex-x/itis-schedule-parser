@@ -8,5 +8,5 @@ class GetAllEnglishSubjectsByDailyScheduleId(
     private val englishSubjectRepository: EnglishSubjectRepository,
 ) {
     operator fun invoke(dailyScheduleId: Long) =
-        englishSubjectRepository.getAllByDailyScheduleId(dailyScheduleId)
+        englishSubjectRepository.findAllByDailyScheduleId(dailyScheduleId)
 }

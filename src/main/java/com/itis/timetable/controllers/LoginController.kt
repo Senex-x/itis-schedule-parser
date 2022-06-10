@@ -1,13 +1,13 @@
 package com.itis.timetable.controllers
 
 import com.itis.timetable.data.entity.security.JwtRequest
+import com.itis.timetable.data.entity.security.UserInfo
+import com.itis.timetable.data.repositories.UserRepository
 import com.itis.timetable.security.JwtTokenUtil
 import com.itis.timetable.security.JwtUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
-import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
@@ -27,13 +27,16 @@ class LoginController {
 
     @Lazy
     @Autowired
-    private val authenticationManager: AuthenticationManager? = null
+    lateinit var authenticationManager: AuthenticationManager
 
     @Autowired
-    private val jwtTokenUtil: JwtTokenUtil? = null
+    lateinit var jwtTokenUtil: JwtTokenUtil
 
     @Autowired
     lateinit var userDetailsService: JwtUserDetailsService
+
+    @Autowired
+    lateinit var repository: UserRepository
 
     @GetMapping("/login")
     fun get(): String {
@@ -44,17 +47,33 @@ class LoginController {
     fun createAuthenticationToken(authenticationRequest: JwtRequest, response: HttpServletResponse): ResponseEntity<Any> {
         authenticate(authenticationRequest.username, authenticationRequest.password)
         val userDetails = userDetailsService.loadUserByUsername(authenticationRequest.username)
-        val token = jwtTokenUtil!!.generateToken(userDetails)
+        println("Password: " + userDetails.password)
+        val token = jwtTokenUtil.generateToken(userDetails.username)
         val cookie = Cookie("token", token)
         response.addCookie(cookie)
         response.sendRedirect("/")
+        return ResponseEntity.ok().build()
+    }
 
+    fun createAuthenticationTokenNew(authenticationRequest: JwtRequest, response: HttpServletResponse): ResponseEntity<Any> {
+        println(authenticationRequest.username + authenticationRequest.password)
+
+        authenticate(authenticationRequest.username, authenticationRequest.password)
+
+        println(authenticationRequest.username + authenticationRequest.password)
+
+        repository.save(UserInfo(1, authenticationRequest.username, authenticationRequest.password))
+
+        val token = jwtTokenUtil.generateToken(authenticationRequest.username)
+        val cookie = Cookie("token", token)
+        response.addCookie(cookie)
+        response.sendRedirect("/")
         return ResponseEntity.ok().build()
     }
 
     private fun authenticate(username: String, password: String) {
         try {
-            authenticationManager!!.authenticate(UsernamePasswordAuthenticationToken(username, password))
+            authenticationManager.authenticate(UsernamePasswordAuthenticationToken(username, password))
         } catch (e: DisabledException) {
             throw Exception("USER_DISABLED", e)
         } catch (e: BadCredentialsException) {

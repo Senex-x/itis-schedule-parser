@@ -1,11 +1,9 @@
 package com.itis.timetable.data.repositories
 
-import com.itis.timetable.data.entity.subject.Subject
-import org.hibernate.SessionFactory
-import org.springframework.stereotype.Repository
-import org.springframework.transaction.annotation.Transactional
+import com.itis.timetable.data.entity.security.UserInfo
+import org.springframework.data.repository.CrudRepository
 
-@Repository
-class UserRepository {
+interface UserRepository : CrudRepository<UserInfo, Long> {
 
+    fun findByUsername(username: String): UserInfo?
 }

@@ -17,14 +17,14 @@ class GetScheduleByGroup(
     private val getAllEnglishSubjectsByDailyScheduleId: GetAllEnglishSubjectsByDailyScheduleId,
 ) {
     operator fun invoke(group: Group): Schedule {
-        val scheduleEntity = scheduleEntityRepository.getByGroupId(group.id)
+        val scheduleEntity = scheduleEntityRepository.findByGroupId(group.id)!!
 
-        val dailyScheduleEntities = dailyScheduleEntityRepository.getAllByScheduleId(scheduleEntity.id)
+        val dailyScheduleEntities = dailyScheduleEntityRepository.findAllByScheduleId(scheduleEntity.id)
         val dailySchedules = mutableListOf<DailySchedule>()
 
         for (dailyScheduleEntity in dailyScheduleEntities) {
             val dailyScheduleId = dailyScheduleEntity.id
-            val subjects = subjectRepository.getAllByDailyScheduleId(dailyScheduleId)
+            val subjects = subjectRepository.findAllByDailyScheduleId(dailyScheduleId)
             val variedSubjects = getAllVariedSubjectsByDailyScheduleId(dailyScheduleId)
             val englishSubjects = getAllEnglishSubjectsByDailyScheduleId(dailyScheduleId)
 

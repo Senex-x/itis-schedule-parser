@@ -7,5 +7,5 @@ import org.springframework.stereotype.Component
 class GetAllGroups(
     private val groupRepository: GroupRepository,
 ) {
-    operator fun invoke() = groupRepository.getAll()
+    operator fun invoke() = groupRepository.findAll()
 }

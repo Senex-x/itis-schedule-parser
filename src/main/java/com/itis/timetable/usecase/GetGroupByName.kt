@@ -7,5 +7,5 @@ import org.springframework.stereotype.Component
 class GetGroupByName(
     private val groupRepository: GroupRepository
 ) {
-    operator fun invoke(name: String) = groupRepository.getByName(name)
+    operator fun invoke(name: String) = groupRepository.findByName(name)
 }

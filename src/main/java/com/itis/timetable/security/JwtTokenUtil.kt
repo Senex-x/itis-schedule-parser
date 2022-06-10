@@ -8,9 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import java.io.Serializable
 import java.util.*
-import javax.security.auth.Subject.getSubject
 import kotlin.collections.HashMap
-import kotlin.reflect.KFunction
 
 
 @Component
@@ -44,9 +42,9 @@ open class JwtTokenUtil : Serializable {
     }
 
     //generate token for user
-    fun generateToken(userDetails: UserDetails): String {
+    fun generateToken(username: String): String {
         val claims: Map<String, Any> = HashMap()
-        return doGenerateToken(claims, userDetails.username)
+        return doGenerateToken(claims, username)
     }
 
     //while creating the token -

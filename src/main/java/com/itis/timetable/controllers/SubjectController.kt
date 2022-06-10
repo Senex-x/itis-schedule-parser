@@ -20,6 +20,6 @@ class SubjectController(
         .create()
         .toJson(
             Mappers.getMapper(SubjectMapper::class.java)
-                .toDto(repository.get(subjectId))
+                .toDto(repository.findById(subjectId).orElse(null))
         )
 }
