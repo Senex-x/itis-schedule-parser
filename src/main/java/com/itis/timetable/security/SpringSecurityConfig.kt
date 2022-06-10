@@ -46,7 +46,7 @@ open class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(httpSecurity: HttpSecurity) {
         // We don't need CSRF for this example
         httpSecurity.csrf().disable() // dont authenticate this particular request
-            .authorizeRequests().antMatchers("/authenticate")
+            .authorizeRequests().antMatchers("/login")
             .permitAll().anyRequest() // all other requests need to be authenticated
             .authenticated().and()
             .exceptionHandling() // make sure we use stateless session; session won't be used to store user's state.

@@ -7,9 +7,9 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import java.io.IOException
+import java.util.*
 import javax.servlet.FilterChain
-import javax.servlet.ServletException
+import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -21,24 +21,20 @@ open class JwtRequestFilter : OncePerRequestFilter() {
     @Autowired
     private val jwtTokenUtil: JwtTokenUtil? = null
 
-    @Throws(ServletException::class, IOException::class)
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
-        val requestTokenHeader = request.getHeader("Authorization")
+        val jwtToken = request.cookies
+            .filter { cookie -> cookie.name == "token" }
+            .map(Cookie::getValue)
+            .firstOrNull()
+
         var username: String? = null
-        var jwtToken: String? = null
-        // JWT Token is in the form "Bearer token". Remove Bearer word and get
-        // only the Token
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            jwtToken = requestTokenHeader.substring(7)
-            try {
-                username = jwtTokenUtil!!.getUsernameFromToken(jwtToken)
-            } catch (e: IllegalArgumentException) {
-                println("Unable to get JWT Token")
-            } catch (e: ExpiredJwtException) {
-                println("JWT Token has expired")
-            }
-        } else {
-            logger.warn("JWT Token does not begin with Bearer String")
+
+        try {
+            username = jwtTokenUtil!!.getUsernameFromToken(jwtToken)
+        } catch (e: IllegalArgumentException) {
+            println("Unable to get JWT Token")
+        } catch (e: ExpiredJwtException) {
+            println("JWT Token has expired")
         }
 
         // Once we get the token validate it.
