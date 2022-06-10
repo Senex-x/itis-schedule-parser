@@ -19,7 +19,7 @@ open class JwtRequestFilter : OncePerRequestFilter() {
     private val jwtUserDetailsService: JwtUserDetailsService? = null
 
     @Autowired
-    private val jwtTokenUtil: JwtTokenUtil? = null
+    lateinit var jwtTokenUtil: JwtTokenUtil
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         val jwtToken = request.cookies
@@ -30,7 +30,7 @@ open class JwtRequestFilter : OncePerRequestFilter() {
         var username: String? = null
 
         try {
-            username = jwtTokenUtil!!.getUsernameFromToken(jwtToken)
+            username = jwtTokenUtil.getUsernameFromToken(jwtToken)
         } catch (e: IllegalArgumentException) {
             println("Unable to get JWT Token")
         } catch (e: ExpiredJwtException) {
@@ -43,7 +43,7 @@ open class JwtRequestFilter : OncePerRequestFilter() {
 
             // if token is valid configure Spring Security to manually set
             // authentication
-            if (jwtTokenUtil!!.validateToken(jwtToken, userDetails)) {
+            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
                 val usernamePasswordAuthenticationToken = UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.authorities
                 )
