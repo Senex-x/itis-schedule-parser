@@ -13,13 +13,14 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.DisabledException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import javax.servlet.http.Cookie
 import javax.servlet.http.HttpServletResponse
-
 
 @Controller
 @CrossOrigin
@@ -33,9 +34,6 @@ class LoginController {
     lateinit var jwtTokenUtil: JwtTokenUtil
 
     @Autowired
-    lateinit var userDetailsService: JwtUserDetailsService
-
-    @Autowired
     lateinit var repository: UserRepository
 
     @GetMapping("/login")
@@ -46,24 +44,6 @@ class LoginController {
     @PostMapping("/login", consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
     fun createAuthenticationToken(authenticationRequest: JwtRequest, response: HttpServletResponse): ResponseEntity<Any> {
         authenticate(authenticationRequest.username, authenticationRequest.password)
-        val userDetails = userDetailsService.loadUserByUsername(authenticationRequest.username)
-        println("Password: " + userDetails.password)
-        val token = jwtTokenUtil.generateToken(userDetails.username)
-        val cookie = Cookie("token", token)
-        response.addCookie(cookie)
-        response.sendRedirect("/")
-        return ResponseEntity.ok().build()
-    }
-
-    fun createAuthenticationTokenNew(authenticationRequest: JwtRequest, response: HttpServletResponse): ResponseEntity<Any> {
-        println(authenticationRequest.username + authenticationRequest.password)
-
-        authenticate(authenticationRequest.username, authenticationRequest.password)
-
-        println(authenticationRequest.username + authenticationRequest.password)
-
-        repository.save(UserInfo(1, authenticationRequest.username, authenticationRequest.password))
-
         val token = jwtTokenUtil.generateToken(authenticationRequest.username)
         val cookie = Cookie("token", token)
         response.addCookie(cookie)

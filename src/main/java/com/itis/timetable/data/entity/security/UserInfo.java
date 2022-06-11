@@ -3,10 +3,7 @@ package com.itis.timetable.data.entity.security;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @NoArgsConstructor
 @ToString
@@ -14,6 +11,7 @@ import javax.persistence.Table;
 @Table(name = "users", schema = "public")
 public class UserInfo {
     @Id
+    @GeneratedValue
     private Long id;
     @Column(nullable = false, unique = true)
     private String username;
