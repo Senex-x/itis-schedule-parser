@@ -1,46 +1,22 @@
 # Schedule parser
-A web microservice that provides an API for retrieving parsed schedule data from Google Spreadsheets. Designed to work with other microservices.
+The web microservice that provides an API for retrieving and parsing timetable data from Google Spreadsheets. Designed to work with the [ITIS Timetable](https://github.com/Senex-x/itis-timetable) android app.
 
-## POST or PUT Schedule
-#### /schedule
+Deployed at: https://itis-timetable-parser.herokuapp.com/
+
+### /parse
+Initializes timetable parsing
 
 ## GET Schedule
-#### /schedule/{groupName}
-Params: groupName: String
+### /schedule/{groupName}
+Returns Schedule by group name 
 
-#### /schedule/{groupId}
-Params: groupId: Long
+### /schedule/{groupId}
+Returns Schedule by group id 
 
-#### /schedule/{scheduleId}
-Params: scheduleId: Long
+## GET Group
+### /group
+Returns all groups
 
-#### /schedule
-Returns: All schedules
-
-## DELETE Schedule
-#### /schedule/{groupName}
-Params: groupName: String
-
-#### /schedule/{groupId}
-Params: groupId: Long
-
-#### /schedule/{scheduleId}
-Params: scheduleId: Long
-
-#### /schedule
-Delete all schedules
-
-## POST or PUT DailySchedule
-#### /schedule/{groupId}/daily
-Params: groupId: Long
-
-#### /schedule/{scheduleId}/daily
-Params: scheduleId: Long
-
-## GET DailySchedule
-#### /schedule/{groupId}/daily/{timestamp}
-Params: groupId: Long, timestamp: Long
-
-## DELETE DailySchedule
-#### /schedule/{groupId}/daily/{timestamp}
-Params: groupId: Long, timestamp: Long
+## GET Subject
+### /subject/{subjectId}
+Returns Subject by its id
