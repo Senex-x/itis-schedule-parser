@@ -27,7 +27,7 @@ class TimetableParser {
     fun parse(): List<Schedule> {
         println("############## PARSING IN PROCESS ##############")
 
-        val groupsRange = "C3:3" // "C3:3"
+        val groupsRange = "C2:2"
         val groupValues = access.execute(groupsRange)[0]
         val groupsCount = groupValues.filter { cell -> cell.indexOf('-') != -1 }.size
 
@@ -201,10 +201,8 @@ class TimetableParser {
     companion object {
         private const val SHEET_NAME = "'расписание занятий 2 с 2021-2022'"
         private const val LEFT_START_NUMERIC = 3
-        private const val LEFT_START = "C"
-        private const val TOP_START = "3"
-        private const val RIGHT_END = "BA"
-        private const val BOTTOM_END = "45"
+        private const val TOP_START = "2"
+        private const val BOTTOM_END = "44"
         private const val CLASSES_PER_DAY = 7
         private val VARIED_SUBJECT_PREFIX_REGEX = Regex(" *[Дд]исциплин[аы] +по +выбору:?[ .,]*")
         private val PHYSICAL_SUBJECT_PREFIX_REGEX =
