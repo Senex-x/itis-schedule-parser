@@ -31,7 +31,7 @@ open class HibernateConfiguration {
 
     @Bean
     open fun provideDataSource() = DriverManagerDataSource().apply {
-        setDriverClassName(environment.getProperty("spring.datasource.driver-class-name")!!)
+        //setDriverClassName(environment.getProperty("spring.datasource.driver-class-name")!!)
         url = environment.getProperty("spring.datasource.url")
         username = environment.getProperty("spring.datasource.username")
         password = environment.getProperty("spring.datasource.password")
