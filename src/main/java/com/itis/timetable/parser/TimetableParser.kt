@@ -15,12 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.time.DayOfWeek
 
-/* Некорректно парсится:
-    Технологическая (проектно-технологическая) практика  в 1310 , Чупин М.М. в 1309.
-*/
-
 @Component
 class TimetableParser {
+
     @Autowired
     private lateinit var access: AccessService
 
