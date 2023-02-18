@@ -8,7 +8,10 @@ fun findFirstNameWithOptionalRoom(string: String): NameWithRoomParsed? {
     //println("Origin: $string")
 
     val nameResult = findName(string) ?: return null
-    val professorInfo = parseTeacherInfo(nameResult.value)!! // Not gonna be null
+    // TODO Fix this. It should not be null
+    val professorInfo = parseTeacherInfo(nameResult.value) ?: TeacherInfo(
+        "", "", "", 0, 0
+    ) // Not gonna be null
 
     val roomResult = findRoom(string)
     val nameLastIndex = nameResult.range.last
