@@ -24,6 +24,7 @@ open class Application : SpringBootServletInitializer() {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
+            Class.forName("org.postgresql.Driver")
             runApplication<Application>(*args)
         }
     }
