@@ -8,6 +8,7 @@ import org.springframework.core.env.Environment
 import org.springframework.jdbc.datasource.DriverManagerDataSource
 import org.springframework.orm.hibernate5.HibernateTransactionManager
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean
+import java.sql.DriverManager
 import java.util.*
 
 @Configuration
@@ -31,7 +32,7 @@ open class HibernateConfiguration {
 
     @Bean
     open fun provideDataSource() = DriverManagerDataSource().apply {
-        //setDriverClassName(environment.getProperty("spring.datasource.driver-class-name")!!)
+        setDriverClassName(DriverManager.drivers().findFirst().get().javaClass.name)
         url = environment.getProperty("spring.datasource.url")
         username = environment.getProperty("spring.datasource.username")
         password = environment.getProperty("spring.datasource.password")
