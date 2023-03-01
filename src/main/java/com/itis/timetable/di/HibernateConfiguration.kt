@@ -32,9 +32,9 @@ open class HibernateConfiguration {
 
     @Bean
     open fun provideDataSource() = DriverManagerDataSource().apply {
-        Class.forName("org.postgresql.Driver").newInstance()
+        //Class.forName("org.postgresql.Driver").newInstance()
         //setDriverClassName(DriverManager.drivers().findFirst().get().javaClass.name)
-        setDriverClassName(environment.getProperty("spring.datasource.driver-class-name")!!)
+        //setDriverClassName(environment.getProperty("spring.datasource.driver-class-name")!!)
         url = environment.getProperty("spring.datasource.url")
         username = environment.getProperty("spring.datasource.username")
         password = environment.getProperty("spring.datasource.password")
